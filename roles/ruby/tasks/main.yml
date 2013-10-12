@@ -4,29 +4,22 @@
  
 - name: run rbenv-installer
   action: raw HOME=/home/$user /tmp/rbenv-installer
-  sudo_user: $user
  
 - name: copy gem environment setup
   action: copy src=gemrc dest=/home/$user/.gemrc mode=0644
-  sudo_user: $user
 
 - name: update PATH in ~/.bashrc for rbenv
   action: lineinfile dest=$home/.bashrc line=export\ PATH="$HOME/.rbenv/bin:$PATH" regexp=PATH.*rbenv
-  sudo_user: $user
 
 - name: add rbenv init to ~/.bashrc
   action: lineinfile dest=$home/.bashrc line='eval "$(rbenv init -)"' regexp=eval.*rbenv
-  sudo_user: $user
 
 - name: install ruby
   action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv install $ruby_version
-  sudo_user: $user
 
 - name: make ruby global
   action: shell $home/.rbenv/bin/rbenv global $ruby_version
-  sudo_user: $user
   notify: initialize rbenv
 
 - name: install bundler gem
   gem: name=bundler
-  sudo_user: $user

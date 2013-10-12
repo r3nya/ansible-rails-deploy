@@ -3,8 +3,6 @@
   git: repo=$git_url
        dest=/home/$user/$app_name/www
        version=$git_branch
-  sudo_user: $user
 
-- name: create www directory
+- name: create shared directory
   shell: mkdir /home/$user/$app_name/www/shared/
-  sudo_user: $user

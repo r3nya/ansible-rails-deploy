@@ -1,15 +1,15 @@
 ---
 - name: Install Rbenb, Ruby & Ruby Env 
   hosts: web
-  sudo: yes
+  sudo:  yes
 
   roles:
     - common
-    - ruby
-    - webapp
-    - unicorn
+    - { role: ruby,	sudo_user: $user }
+    - { role: webapp,	sudo_user: $user }
+    - { role: unicorn,	sudo_user: $user }
     - nginx
-    - bluepill
+    - { role: bluepill,	sudo_user: $user }
 
   vars:
     user: "dev"
