@@ -1,0 +1,49 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides: bluepill
+# Required-Start:    $local_fs $remote_fs $network $syslog $time
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: bluepill daemon, providing process monitoring
+# Description: bluepill is a monitoring tool. More info at http://github.com/arya/bluepill.
+### END INIT INFO
+set -e
+
+. /lib/lsb/init-functions
+
+
+# here comes default config
+USER={{ user }}
+RAILS_ENV=production
+APP_ROOT=/home/{{ user }}/{{ app_name }}/www
+CMD="sudo -i -u $USER -- bash -c '$APP_ROOT/current/bin/bluepill --no-privileged"
+
+case "$1" in
+    start)
+        echo -n "Starting bluepill for user $USER"
+        eval "$CMD load $APP_ROOT/current/config/blue.pill'"
+        ;;
+    stop)
+        echo "Shutting down monitored processes"
+        eval "$CMD stop'"
+
+        echo "Shutting down bluepill daemon"
+        eval "$CMD quit'"
+        ;;
+    restart)
+        ## Stop the service and regardless of whether it was
+        ## running or not, start it again.
+        $0 stop
+        $0 start
+        ;;
+    status)
+        eval "$CMD status'"
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+        ;;
+esac
+
