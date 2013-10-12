@@ -1,0 +1,20 @@
+---
+- name: Install Rbenb, Ruby & Ruby Env 
+  hosts: web
+  sudo: yes
+
+  roles:
+    - common
+    - ruby
+    - webapp
+    - unicorn
+    - nginx
+    - bluepill
+
+  vars:
+    user: "dev"
+    home: /home/$user
+    app_name: "blog"
+    ruby_version: "1.9.3-p448"
+    git_url: "git://"
+    git_branch: "test"

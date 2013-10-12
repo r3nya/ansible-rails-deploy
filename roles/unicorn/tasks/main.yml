@@ -1,0 +1,7 @@
+---
+#- name: Install Unicorn
+#  gem: name=unicorn
+#  sudo_user: $user
+
+- name: Generate Unicorn config
+  template: src=unicorn_rb.j2 dest=/home/$user/$app_name/www/config/unicorn.rb owner=$user group=$user mode=664

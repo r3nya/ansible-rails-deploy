@@ -1,0 +1,4 @@
+---
+- name: initialize rbenv
+  shell: /bin/bash -c "source /home/$user/.bashrc"
+  sudo_user: $user

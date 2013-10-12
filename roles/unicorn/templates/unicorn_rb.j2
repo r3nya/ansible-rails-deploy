@@ -1,0 +1,41 @@
+worker_processes 4
+timeout 30
+preload_app true
+
+deploy_to = "{{ home }}/{{ app_name }}/www"
+pid_file = "#{deploy_to}/shared/pids/unicorn.pid"
+old_pid_file = "#{pid_file}.oldbin"
+log_file = "#{deploy_to}/current/log/unicorn.log"
+err_file = "#{deploy_to}/current/log/unicorn_error.log"
+
+pid pid_file
+stdout_path log_file
+stderr_path err_file
+
+before_exec do |server|
+  ENV['BUNDLE_GEMFILE'] = "#{deploy_to}/current/Gemfile"
+end
+
+before_fork do |server, worker|
+  if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.connection.disconnect!
+    Rails.logger.info('Disconnected from ActiveRecord')
+  end
+
+  if File.exists?(old_pid_file) && server.pid != old_pid_file
+    begin
+      Process.kill("QUIT", File.read(old_pid_file).to_i)
+    rescue Errno::ENOENT, Errno::ESRCH
+    end
+  end
+
+  sleep 1
+end
+
+after_fork do |server, worker|
+  if defined?(ActiveRecord::Base)
+    ActiveRecord::Base.establish_connection
+    Rails.logger.info('Connected to ActiveRecord')
+  end
+end
+
