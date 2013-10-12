@@ -1,5 +1,0 @@
----
-- name: Install Bluepill
-  gem: name=bluepill
-  sudo_user: $user
-
