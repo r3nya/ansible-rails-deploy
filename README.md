@@ -3,8 +3,10 @@ ansible-rails-deploy
 
 Deploy Ruby on Rails app using ansible
 
-* Deb-based Linux disrt
+* Ubuntu
 * Rbenv
 * Unicorn
 * Nginx
 * Bluepill
+
+Good luck!
