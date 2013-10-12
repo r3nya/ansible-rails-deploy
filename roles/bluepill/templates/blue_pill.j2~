@@ -1,0 +1,22 @@
+ENV['RAILS_ENV'] = 'production'
+
+Bluepill.application('{{ app_name }}') do |app|
+
+  deploy_to = '/home/{{ user }}/www'
+
+  app.working_dir = "#{deploy_to}/current"
+  app.uid = app.gid = '{{ app_name }}'
+
+  app.process('unicorn') do |process|
+    process.pid_file = "#{deploy_to}/shared/pids/unicorn.pid"
+
+    process.start_command = "bin/unicorn_rails -E production -c ./config/unicorn.rb -p 5002"
+    process.stop_command = "kill -QUIT {{PID}}"
+    process.restart_command = "kill -USR2 {{PID}}"
+
+    process.start_grace_time = 10.seconds
+    process.stop_grace_time = 10.seconds
+    process.restart_grace_time = 10.seconds
+  end
+end
+
