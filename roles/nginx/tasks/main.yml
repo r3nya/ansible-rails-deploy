@@ -1,7 +1,15 @@
 ---
-- name: Install Unicorn
-  gem: name=unicorn
-  sudo_user: $user
+- name: Install Nginx
+  apt: pkg=nginx-full state=latest update_cache=yes
 
-- name: Generate Unicorn config
-  template: src=unicorn_rb.j2 dest=/home/$user/$appname/www/config/ owner=$user group=$user mode=664
+- name: Delete default vhost
+  action: file path=/etc/nginx/sites-enabled/default state=absent
+
+- name: Generate Nginx config
+  template: src=nginx_conf.j2 dest=/etc/nginx/sites-available/$app_name.conf
+
+- name: Link Nginx config
+  action: file src=/etc/nginx/sites-available/$app_name.conf dest=/etc/nginx/sites-enabled/$app_name.conf state=link
+  notify:
+    - restart nginx
+
