@@ -1,9 +1,7 @@
 ---
 - name: Install Capistrano gem
-  gem: name=capistrano
-  sudo_user: $user
+  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install capistrano
+  notify: rbenv rehash
 
-#- name: Capistrano init?
-
-- name: Generate Capistrano config
-  template: src=deploy_rb.j2 dest=/home/$user/$app_name/www/config/deploy.rb owner=$user group=$user mode=664
+#- name: Generate Capistrano config
+#  template: src=deploy_rb.j2 dest=/home/$user/$app_name/www/config/deploy.rb

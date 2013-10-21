@@ -1,6 +1,7 @@
 ---
 - name: Install Bluepill
-  gem: name=bluepill
+  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bluepill
+  notify: rbenv rehash
 
 - name: Generate Bluepill config
   template: src=blue_pill.j2 dest=/home/$user/$app_name/www/config/blue.pill

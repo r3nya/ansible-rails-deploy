@@ -1,10 +1,10 @@
 --- 
 - name: download rbenv-installer for $user
   action: get_url url=https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer dest=/tmp/rbenv-installer mode=0755
- 
+
 - name: run rbenv-installer
   action: raw HOME=/home/$user /tmp/rbenv-installer
- 
+
 - name: copy gem environment setup
   action: copy src=gemrc dest=/home/$user/.gemrc mode=0644
 
@@ -16,10 +16,11 @@
 
 - name: install ruby
   action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv install $ruby_version
+  notify: initialize rbenv
 
 - name: make ruby global
   action: shell $home/.rbenv/bin/rbenv global $ruby_version
-  notify: initialize rbenv
 
 - name: install bundler gem
-  gem: name=bundler
+  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bundler
+  notify: rbenv rehash

@@ -11,8 +11,8 @@ Bluepill.application('{{ app_name }}') do |app|
     process.pid_file = "#{deploy_to}/shared/pids/unicorn.pid"
 
     process.start_command = "bin/unicorn_rails -E production -c ./config/unicorn.rb -p 5002"
-    process.stop_command = "kill -QUIT {{PID}}"
-    process.restart_command = "kill -USR2 {{PID}}"
+    process.stop_command = "kill -QUIT {{ '{{PID}}' }}"
+    process.restart_command = "kill -USR2 {{' {{PID}}' }}"
 
     process.start_grace_time = 10.seconds
     process.stop_grace_time = 10.seconds
