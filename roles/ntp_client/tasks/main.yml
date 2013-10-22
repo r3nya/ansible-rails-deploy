@@ -1,0 +1,18 @@
+---
+- name: Install ntp
+  apt: pkg=ntp state=installed
+
+- name: Install ntpdate
+  apt: pkg=ntpdate state=installed
+
+- name: Stop NTP service. Need to do this before you attempt one-time ntpdate use
+  service: name=ntp state=stopped
+
+- name: One-time setting of date and time via ntpdate
+  command: ntpdate 0.ru.pool.ntp.org
+
+- name: Set up ntp
+  copy: src=ntp.conf dest=/etc/ntp.conf
+
+- name: Run NTP service
+  service: name=ntp state=started
