@@ -1,0 +1,26 @@
+---
+- name:  Deploy WebApp
+  hosts: all
+  sudo:  yes
+
+  roles:
+    - { role: ruby,    sudo_user: $user }
+    - { role: webapp,  sudo_user: $user }
+    - { role: unicorn, sudo_user: $user }
+    - nginx
+    - { role: bluepill, sudo_user: $user }
+    - { role: capistrano, sudo_user: $user }
+
+  vars:
+    user: "dev"
+    home: /home/$user
+    app_name: "blog"
+    ruby_version: "1.9.3-p448"
+    git_url: "git://"
+    git_branch: "test"
+
+# TODO
+
+  handlers:
+    - name: rbenv rehash
+      action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv rehash
