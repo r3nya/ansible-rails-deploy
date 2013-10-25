@@ -1,5 +1,5 @@
 --- 
-- name: download rbenv-installer for $user
+- name: download rbenv-installer
   action: get_url url=https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer dest=/tmp/rbenv-installer mode=0755
 
 - name: run rbenv-installer
@@ -14,11 +14,11 @@
 - name: add rbenv init to ~/.bashrc
   action: lineinfile dest=$home/.bashrc line='eval "$(rbenv init -)"' regexp=eval.*rbenv
 
-- name: install ruby $ruby_version
+- name: install ruby
   action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv install $ruby_version
   notify: initialize rbenv
 
-- name: make ruby $ruby_version global
+- name: make ruby global
   action: shell $home/.rbenv/bin/rbenv global $ruby_version
 
 - name: install bundler gem
