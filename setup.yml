@@ -5,4 +5,5 @@
 
   roles:
     - common
+    - postgresql
     - ntp_client
