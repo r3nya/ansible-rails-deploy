@@ -12,8 +12,6 @@
     - { role: capistrano, sudo_user: $user }
 
   vars:
-    user: "dev"
-    home: /home/$user
     app_name: "blog"
     ruby_version: "1.9.3-p448"
     git_url: "git://"

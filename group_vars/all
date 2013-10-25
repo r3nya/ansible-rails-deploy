@@ -1,3 +1,11 @@
 ---
+### System
+
+# User
+user: "dev"
+home: /home/$user
+
+### Config files
+
 #Unicorn workers number
 unicorn_workers: 2
