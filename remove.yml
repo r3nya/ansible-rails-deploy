@@ -1,10 +1,11 @@
 ---
 - name:  Remove WebApp
   hosts: all
-#  sudo:  yes
+  sudo:  yes
 
 tasks:
   - name: Drop DB from $app_name
     command: /bin/bash -c "cd $home/$app_name/www/ && HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec rake db:drop"
 
-# TODO: Delete files
+  - name: Remove $app_name
+  #  user: name=$user state=absent remove=yes

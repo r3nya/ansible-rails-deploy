@@ -15,4 +15,4 @@
   copy: src=ntp.conf dest=/etc/ntp.conf
 
 - name: Run NTP service
-  service: name=ntp state=started
+  service: name=ntp state=started enabled=yes

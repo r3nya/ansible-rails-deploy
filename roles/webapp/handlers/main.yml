@@ -1,6 +1,3 @@
 ---
-- name: initialize rbenv
-  shell: /bin/bash -c "source /home/$user/.bashrc"
-
 - name: rbenv rehash
   action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv rehash

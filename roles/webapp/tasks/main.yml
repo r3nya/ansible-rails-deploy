@@ -1,5 +1,5 @@
 ---
-- name: git clone $app_name
+- name: git clone application
   git: repo=$git_url
        dest=/home/$user/$app_name/www
        version=$git_branch

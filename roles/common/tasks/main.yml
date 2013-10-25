@@ -19,3 +19,4 @@
     - curl
     - git
     - libsqlite3-dev
+    - libmysqlclient-dev
