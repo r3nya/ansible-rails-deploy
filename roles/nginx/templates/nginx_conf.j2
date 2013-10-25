@@ -1,6 +1,6 @@
 server {
 
-    listen 0.0.0.0:80;
+    listen {{ nginx_listen_address }}:{{ nginx_listen_port }};
     
     proxy_intercept_errors  off;
 

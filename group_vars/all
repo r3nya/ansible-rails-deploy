@@ -7,5 +7,9 @@ home: /home/$user
 
 ### Config files
 
-#Unicorn workers number
+# Nginx listen address
+nginx_listen_address: 0.0.0.0
+nginx_listen_port: 80
+
+# Unicorn workers number
 unicorn_workers: 2
