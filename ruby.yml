@@ -1,0 +1,12 @@
+---
+- name: Install Rbenv & Ruby
+  hosts: all
+  sudo: yes
+
+  roles:
+    - ruby
+
+  vars_prompt:
+    - name: "ruby_version"
+      prompt: "Please input Ruby version, or use default =="
+      default: "2.0.0-p247"
