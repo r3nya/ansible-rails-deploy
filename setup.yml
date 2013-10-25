@@ -6,14 +6,3 @@
   roles:
     - common
     - ntp_client
-
-  vars:
-    user: "dev"
-    home: /home/$user
-    app_name: "blog"
-#    ruby_version: "1.9.3-p448"
-
-  vars_prompt:
-    - name: ruby_version
-      ruby_version: "blablabla"
-      default: "1.9.3-p448"

@@ -1,6 +1,9 @@
 ---
 - name: Add user
-  user: name=$user shell='/bin/bash'
+  user: name=$user password=$user_password shell=$user_shell
+
+- name: Install python-apt (for the Ansible apt module)
+  command: apt-get --assume-yes install python-apt
 
 - name: Install deb pkg
   apt: pkg=$item state=latest update_cache=yes

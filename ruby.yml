@@ -4,9 +4,13 @@
   sudo: yes
 
   roles:
-    - ruby
+    - { role: ruby,    sudo_user: $user }
 
   vars_prompt:
     - name: "ruby_version"
       prompt: "Please input Ruby version, or use default =="
       default: "2.0.0-p247"
+
+  handlers:
+    - name: rbenv rehash
+      action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv rehash

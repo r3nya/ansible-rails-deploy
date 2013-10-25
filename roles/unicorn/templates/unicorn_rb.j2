@@ -1,4 +1,4 @@
-worker_processes 4
+worker_processes {{ unicorn_workers }}
 timeout 30
 preload_app true
 
@@ -38,4 +38,3 @@ after_fork do |server, worker|
     Rails.logger.info('Connected to ActiveRecord')
   end
 end
-

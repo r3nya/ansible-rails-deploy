@@ -1,8 +1,16 @@
 ---
+### Application
+
+app_name: "blog2"
+git_url: "http://git.blablalba"
+git_branch: "test"
+
 ### System
 
 # User
 user: "dev"
+user_password: "12345"
+user_shell: "/bin/bash"
 home: /home/$user
 
 ### Config files
