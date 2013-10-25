@@ -1,10 +1,10 @@
 ---
 - name: Install Capistrano gem
-  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bundler
+  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install capistrano
   notify: rbenv rehash
 
-- name: Capistrano init
-  command: /bin/bash -c "cd $home/$app_name/www/ && HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec cap install" 
+#- name: Capistrano init
+#  command: /bin/bash -c "cd $home/$app_name/www/ && HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec cap install" 
 
 #- name: Generate Capistrano config
 #  template: src=deploy_rb.j2 dest=/home/$user/$app_name/www/config/deploy.rb owner=$user group=$user mode=664
