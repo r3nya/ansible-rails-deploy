@@ -6,10 +6,10 @@
   action: file path=/etc/nginx/sites-enabled/default state=absent
 
 - name: Generate Nginx config
-  template: src=nginx_conf.j2 dest=/etc/nginx/sites-available/$app_name.conf
+  template: src=nginx_conf.j2 dest=/etc/nginx/sites-available/$user_$app_name.conf
 
 - name: Link Nginx config
-  action: file src=/etc/nginx/sites-available/$app_name.conf dest=/etc/nginx/sites-enabled/$app_name.conf state=link
+  action: file src=/etc/nginx/sites-available/$user_$app_name.conf dest=/etc/nginx/sites-enabled/$user_$app_name.conf state=link
   notify:
     - restart nginx
 
