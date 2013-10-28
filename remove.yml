@@ -7,5 +7,5 @@ tasks:
   - name: Drop DB from $app_name
     command: /bin/bash -c "cd $home/$app_name/www/ && HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec rake db:drop"
 
-  - name: Remove $app_name
-  #  user: name=$user state=absent remove=yes
+  - name: Remove Application
+    action: shell rm -rf $home/$app_name
