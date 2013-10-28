@@ -2,8 +2,13 @@
 - name: download rbenv-installer
   action: get_url url=https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer dest=/tmp/rbenv-installer mode=0755
 
+- name: check rbenv
+  action: shell test -d $home/.rbenv && echo "yes" || echo ""
+  register: rbenv_installed
+
 - name: run rbenv-installer
   action: raw HOME=/home/$user /tmp/rbenv-installer
+  when_string: ${rbenv_installed.stdout} != "yes"
 
 - name: copy gem environment setup
   action: copy src=gemrc dest=/home/$user/.gemrc mode=0644
@@ -14,10 +19,14 @@
 - name: add rbenv init to ~/.bashrc
   action: lineinfile dest=$home/.bashrc line='eval "$(rbenv init -)"' regexp=eval.*rbenv
 
+- name: check ruby version
+  action: shell test -d $home/.rbenv/versions/$ruby_version && echo "yes" || echo ""
+  register: ruby_ver_installed
+
 - name: install ruby
   action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv install $ruby_version
   notify: initialize rbenv
-  when: test ! -d $home/.rbenv/versions/$ruby_version
+  when_string: ${ruby_ver_installed.stdout} != "yes"
 
 - name: make ruby global
   action: shell $home/.rbenv/bin/rbenv global $ruby_version
@@ -25,4 +34,3 @@
 - name: install bundler gem
   action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bundler
   notify: rbenv rehash
-  when: test ! -f $home/.rbenv/shims/bundle
