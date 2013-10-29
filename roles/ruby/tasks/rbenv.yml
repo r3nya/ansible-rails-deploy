@@ -1,0 +1,15 @@
+---
+- name: download rbenv-installer
+  action: get_url url=https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer dest=/tmp/rbenv-installer mode=0755
+
+- name: run rbenv-installer
+  action: raw HOME=/home/$user /tmp/rbenv-installer
+
+- name: copy gem environment setup
+  action: copy src=gemrc dest=/home/$user/.gemrc mode=0644
+
+- name: update PATH in ~/.bashrc for rbenv
+  action: lineinfile dest=$home/.bashrc line=export\ PATH="$HOME/.rbenv/bin:$PATH" regexp=PATH.*rbenv
+
+- name: add rbenv init to ~/.bashrc
+  action: lineinfile dest=$home/.bashrc line='eval "$(rbenv init -)"' regexp=eval.*rbenv

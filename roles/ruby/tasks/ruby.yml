@@ -1,0 +1,11 @@
+---
+- name: install ruby
+  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv install $ruby_version
+  notify: initialize rbenv
+
+- name: make ruby global
+  action: shell $home/.rbenv/bin/rbenv global $ruby_version
+
+- name: install bundler gem
+  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bundler
+  notify: rbenv rehash
