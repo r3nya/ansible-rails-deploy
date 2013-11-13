@@ -3,7 +3,7 @@
   action: get_url url=https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer dest=/tmp/rbenv-installer mode=0755
 
 - name: run rbenv-installer
-  action: raw HOME=/home/$user /tmp/rbenv-installer
+  shell: HOME=$home /tmp/rbenv-installer
 
 - name: copy gem environment setup
   action: copy src=gemrc dest=/home/$user/.gemrc mode=0644

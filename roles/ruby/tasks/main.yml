@@ -1,13 +1,13 @@
 --- 
 - name: check rbenv
-  action: shell test -d $home/.rbenv && echo "yes"
+  shell: test -d $home/.rbenv && echo "yes" || echo "no"
   register: rbenv_installed
 
 - include: rbenv.yml
   when: rbenv_installed.stdout != "yes"
 
 - name: check ruby version
-  action: shell test -d $home/.rbenv/versions/$ruby_version && echo "yes"
+  shell: test -d $home/.rbenv/versions/$ruby_version && echo "yes" || echo "no"
   register: installed_ruby_version
 
 - include: ruby.yml
