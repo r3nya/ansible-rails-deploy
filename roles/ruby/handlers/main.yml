@@ -3,4 +3,4 @@
   shell: /bin/bash -c "source /home/$user/.bashrc"
 
 - name: rbenv rehash
-  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv rehash
+  shell: $home/.rbenv/bin/rbenv rehash

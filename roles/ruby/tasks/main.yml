@@ -12,3 +12,7 @@
 
 - include: ruby.yml
   when: installed_ruby_version.stdout != "yes"
+
+- name: install bundler gem
+  shell: $home/.rbenv/bin/rbenv exec gem install bundler
+  notify: rbenv rehash
