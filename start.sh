@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SETTINGS="group_vars/all2"
+SETTINGS="group_vars/all"
 
 ###
 
@@ -14,7 +14,7 @@ usage() {
 	echo 'Использование:'
 	echo
 	echo '-h | --help		Это сообщение'
-	echo '-r | --run 		Сделай мне хорошо!'
+	echo '-r | --run		Сделай мне хорошо!'
 	echo '-v | --view		Просмотреть текущие параметры'
 	echo '-s | --setup		Настройка параметров'
 }
@@ -54,8 +54,10 @@ setup_me() {
 }
 
 run_playbook() {
+
 	echo "Введите пароль от sudo :)"
 	ansible-playbook -i host site.yml -K
+
 }
 
 case $1 in
