@@ -2,62 +2,89 @@
 
 SETTINGS="group_vars/all"
 
-###
+# Default variables
 
-# Привет, параметры для Nginx & unicorn можно править руками.
-VARS=`awk -F: '/\w/ {print $1}' $SETTINGS | grep -vP '(^#|home|nginx)'`
+APP_NAME='awesome-site'
+GIT_URL='https://github.com/railstutorial/sample_app_rails_4.git'
+GIT_BRANCH='master'
+
+USER_NAME='deploy'
+USER_PASSWORD='12345'
+USER_SHELL='/bin/bash'
+USER_HOME='/home/$user'
+
+NGINX_LISTEN_ADDRESS='0.0.0.0'
+NGINX_LISTEN_PORT='80'
+UNICORN_WORKERS='2'
 
 ###
 
 usage() {
 
-	echo 'Использование:'
-	echo
-	echo '-h | --help		Это сообщение'
-	echo '-r | --run		Сделай мне хорошо!'
-	echo '-v | --view		Просмотреть текущие параметры'
-	echo '-s | --setup		Настройка параметров'
+	printf "Использование:\n\n"
+	printf "\t-g | --generate\tСгенерировать конфиг параметров из шаблона\n"
+	printf "\t-e | --edit\tРедактировать параметры\n"
+	printf "\t-r | --run\tСделай мне хорошо!\n"
+	printf "\t-v | --view\tПросмотреть текущие параметры\n"
+	printf "\t-h | --help\tЭто сообщение\n"
 }
 
 view_setting() {
 
-	cat $SETTINGS | grep -v ^\-
+	(cat $SETTINGS 2>/dev/null | grep -v ^\- && echo) || echo "Файл параметров отсутствует!"
+
+}
+
+edit_vars() {
+
+	read -e -p "Application name: " -i "$APP_NAME" APP_NAME
+	read -e -p "Git url: " -i "$GIT_URL" GIT_URL
+	read -e -p "Branch name for git checkout: " -i "$GIT_BRANCH" GIT_BRANCH
+
+	read -e -p "User name: " -i "$GIT_BRANCH" USER
+	read -e -p "User password: " -i "$USER_PASSWORD" USER_PASSWORD
+	read -e -p "User shell: " -i "$USER_SHELL" USER_SHELL
+	read -e -p "User home: " -i "$USER_HOME" USER_HOME
+
+	read -e -p "Nginx listen address: " -i "$NGINX_LISTEN_ADDRESS" NGINX_LISTEN_ADDRESS
+	read -e -p "Nginx listen port: " -i "$NGINX_LISTEN_PORT" NGINX_LISTEN_PORT
+	read -e -p "Unicorn workers: " -i "$UNICORN_WORKERS" UNICORN_WORKERS
+
 	echo
-}
 
-edit_config_dude() {
+	generate_config
+ }
 
-	echo 'Введите параметры...'
+generate_config() {
 
-	for i in $VARS
-		do
-			echo $i ' == '
-			read input_variable
-			echo "Выбрано: $input_variable"
-			sed "s/$i\:.*/$i\:\ \"$input_variable\"/" -i $SETTINGS
-		done
-}
+	echo "---" > $SETTINGS
 
-setup_me() {
+	printf "### Application\n" >> $SETTINGS
 
-	echo 'Есть еще шанс прервать, продолжаем? y/n'
+	printf "app_name: \"%s\"\n" "$APP_NAME"	>> $SETTINGS
+	printf "git_url: \"%s\"\n" "$GIT_URL"	>> $SETTINGS
+	printf "git_branch: \"%s\"\n" "$GIT_BRANCH" >> $SETTINGS
+	
+	printf "\n### System\n" >> $SETTINGS
 
-	read yn
-		case $yn in
-			y )
-				edit_config_dude
-				;;
-			n )
-				exit
-				;;
-		esac	
+	printf "user: \"%s\"\n" "$USER_NAME"	>> $SETTINGS
+	printf "user_password: \"%s\"\n" "$USER_PASSWORD" >> $SETTINGS
+	printf "user_shell: \"%s\"\n" "$USER_SHELL" >> $SETTINGS
+	printf "home: \"%s\"\n" "$USER_HOME" >> $SETTINGS
+
+	printf "\n### Config files\n" >> $SETTINGS
+
+	printf "nginx_listen_address: \"%s\"\n" "$NGINX_LISTEN_ADDRESS"	>> $SETTINGS
+	printf "nginx_listen_port: \"%s\"\n\n" "$NGINX_LISTEN_PORT"		>> $SETTINGS
+	printf "unicorn_workers: \"%s\"" "$UNICORN_WORKERS" >> $SETTINGS
+
+	printf "Done! :)\n"
+
 }
 
 run_playbook() {
-
-	echo "Введите пароль от sudo :)"
+	echo "Введите пароль от sudo ..."
 	ansible-playbook -i host site.yml -K
-
 }
 
 case $1 in
@@ -66,8 +93,12 @@ case $1 in
 		view_setting
 		;;
 
-	-s|--setup)
-		setup_me
+	-e|--edit)
+		edit_vars
+		;;
+
+	-g|--generate)
+		generate_config
 		;;
 
 	-h|--help)
