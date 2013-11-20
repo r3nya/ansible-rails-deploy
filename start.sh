@@ -22,8 +22,6 @@ UNICORN_WORKERS='2'
 usage() {
 
 	printf "Использование:\n\n"
-	printf "\t-g | --generate\tСгенерировать конфиг параметров из шаблона\n"
-	printf "\t-e | --edit\tРедактировать параметры\n"
 	printf "\t-r | --run\tСделай мне хорошо!\n"
 	printf "\t-v | --view\tПросмотреть текущие параметры\n"
 	printf "\t-h | --help\tЭто сообщение\n"
@@ -41,7 +39,7 @@ edit_vars() {
 	read -e -p "Git url: " -i "$GIT_URL" GIT_URL
 	read -e -p "Branch name for git checkout: " -i "$GIT_BRANCH" GIT_BRANCH
 
-	read -e -p "User name: " -i "$USER_NAME" USER
+	read -e -p "User name: " -i "$GIT_BRANCH" USER
 	read -e -p "User password: " -i "$USER_PASSWORD" USER_PASSWORD
 	read -e -p "User shell: " -i "$USER_SHELL" USER_SHELL
 	read -e -p "User home: " -i "$USER_HOME" USER_HOME
@@ -50,9 +48,6 @@ edit_vars() {
 	read -e -p "Nginx listen port: " -i "$NGINX_LISTEN_PORT" NGINX_LISTEN_PORT
 	read -e -p "Unicorn workers: " -i "$UNICORN_WORKERS" UNICORN_WORKERS
 
-	echo
-
-	generate_config
  }
 
 generate_config() {
@@ -78,8 +73,6 @@ generate_config() {
 	printf "nginx_listen_port: \"%s\"\n\n" "$NGINX_LISTEN_PORT"		>> $SETTINGS
 	printf "unicorn_workers: \"%s\"" "$UNICORN_WORKERS" >> $SETTINGS
 
-	printf "Done! :)\n"
-
 }
 
 run_playbook() {
@@ -93,19 +86,13 @@ case $1 in
 		view_setting
 		;;
 
-	-e|--edit)
-		edit_vars
-		;;
-
-	-g|--generate)
-		generate_config
-		;;
-
 	-h|--help)
 		usage
 		;;
 
 	-r|--run)
+		edit_vars
+		generate_config
 		run_playbook
 		;;
 
