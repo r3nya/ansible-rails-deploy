@@ -72,30 +72,30 @@ generate_config() {
 
 view_hosts_files() {
 
-	printf "Host-файлы: %s\n\n" "${#HOST_FILES[@]}"
+	printf "Host-файлы: %s\n" "${#HOST_FILES[@]}"
 
 	j=0
 
 	for i in ${HOST_FILES[@]}
 		do			
-			printf "$j: $i\n"
+			printf "\n$j) $i\n"
+			cat hosts/"${HOST_FILES[$j]}"
 			let j++
 		done
-}
 
-cat_hosts_files() {
-
-	printf "Введите номер файла для просмотра его хостов\n"
+	printf "Введите номер интересующего вас файла\n"
 	read number
-	cat hosts/"${HOST_FILES[$number]}"
 
+	clear
+	echo "Deploy hosts:"
+	cat hosts/"${HOST_FILES[$number]}"
+	
 	echo "Перейти к деплою этих хостов? y/n"
 	read yn
 
 	[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" )
 
 }
-
 
 run_playbook() {
 
@@ -112,7 +112,6 @@ case $1 in
 
 	-r|--run)
 		view_hosts_files
-		cat_hosts_files
 		;;
 
 	-g|--generate)
