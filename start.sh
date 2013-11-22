@@ -24,7 +24,7 @@ usage() {
 
 	printf "Использование:\n\n"
 	printf "\t-r | --run\tСделай мне хорошо!\n"
-	printf "\t-v | --view\tПросмотреть текущие параметры\n"
+	printf "\t-g | --generate\tСгенерировать конфиг\n"
 	printf "\t-h | --help\tЭто сообщение\n"
 }
 
@@ -92,10 +92,7 @@ cat_hosts_files() {
 	echo "Перейти к деплою этих хостов? y/n"
 	read yn
 
-	if [ $yn = 'y' ]
-		then
-			run_playbook hosts/"${HOST_FILES[$number]}"
-	fi
+	[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" )
 
 }
 
@@ -113,13 +110,12 @@ case $1 in
 		usage
 		;;
 
-	-v|--view)
+	-r|--run)
 		view_hosts_files
 		cat_hosts_files
 		;;
 
-	-r|--run)
-
+	-g|--generate)
 		edit_vars
 		generate_config
 		;;
