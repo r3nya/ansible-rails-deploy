@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SETTINGS="group_vars/all"
+HOST_FILES=( `ls hosts/` )
 
 # Default variables
 
@@ -27,19 +28,17 @@ usage() {
 	printf "\t-h | --help\tЭто сообщение\n"
 }
 
-view_setting() {
-
-	(cat $SETTINGS 2>/dev/null | grep -v ^\- && echo) || echo "Файл параметров отсутствует!"
-
-}
-
 edit_vars() {
 
 	read -e -p "Application name: " -i "$APP_NAME" APP_NAME
 	read -e -p "Git url: " -i "$GIT_URL" GIT_URL
 	read -e -p "Branch name for git checkout: " -i "$GIT_BRANCH" GIT_BRANCH
 
+<<<<<<< HEAD
+	read -e -p "User name: " -i "$USER_NAME" USER
+=======
 	read -e -p "User name: " -i "$USER_NAME" USER_NAME
+>>>>>>> b586bd16ea24a623000a32a476c073d636351fce
 	read -e -p "User password: " -i "$USER_PASSWORD" USER_PASSWORD
 	read -e -p "User shell: " -i "$USER_SHELL" USER_SHELL
 	read -e -p "User home: " -i "$USER_HOME" USER_HOME
@@ -75,25 +74,58 @@ generate_config() {
 
 }
 
+view_hosts_files() {
+
+	printf "Host-файлы: %s\n\n" "${#HOST_FILES[@]}"
+
+	j=0
+
+	for i in ${HOST_FILES[@]}
+		do			
+			printf "$j: $i\n"
+			let j++
+		done
+}
+
+cat_hosts_files() {
+
+	printf "Введите номер файла для просмотра его хостов\n"
+	read number
+	cat hosts/"${HOST_FILES[$number]}"
+
+	echo "Перейти к деплою этих хостов? y/n"
+	read yn
+
+	if [ $yn = 'y' ]
+		then
+			run_playbook hosts/"${HOST_FILES[$number]}"
+	fi
+
+}
+
+
 run_playbook() {
+
 	echo "Введите пароль от sudo ..."
-	ansible-playbook -i host site.yml -K
+	ansible-playbook -i $1 site.yml -K
+
 }
 
 case $1 in
-
-	-v|--view)
-		view_setting
-		;;
 
 	-h|--help)
 		usage
 		;;
 
+	-v|--view)
+		view_hosts_files
+		cat_hosts_files
+		;;
+
 	-r|--run)
+
 		edit_vars
 		generate_config
-		run_playbook
 		;;
 
 	*)
