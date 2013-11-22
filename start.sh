@@ -36,7 +36,7 @@ edit_vars() {
 	read -e -p "Git url: " -i "$GIT_URL" GIT_URL
 	read -e -p "Branch name for git checkout: " -i "$GIT_BRANCH" GIT_BRANCH
 
-	read -e -p "User name: " -i "$USER_NAME" USER
+	read -e -p "User name: " -i "$USER_NAME" USER_NAME
 	read -e -p "User password: " -i "$USER_PASSWORD" USER_PASSWORD
 	read -e -p "User shell: " -i "$USER_SHELL" USER_SHELL
 
