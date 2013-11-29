@@ -3,7 +3,7 @@
   shell: mkdir -p /home/deploy
 
 - name: Add user
-  user: name={{user}} password={{user_password}} shell={{user_shell}} home={{home}}
+  user: name={{ user }} password={{ user_password }} shell={{ user_shell }} home={{ home }}
 
 - name: Install python-apt (for the Ansible apt module)
   command: apt-get --assume-yes install python-apt

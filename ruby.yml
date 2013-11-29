@@ -4,4 +4,4 @@
   sudo: yes
 
   roles:
-    - { role: ruby,    sudo_user: {{user}} }
+    - { role: ruby,    sudo_user: $user }

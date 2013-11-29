@@ -5,4 +5,4 @@
 
   tasks:
   - name: Remove application
-    shell: rm -rf {{home}}/*/www
+    shell: rm -rf {{ home }}/*/www

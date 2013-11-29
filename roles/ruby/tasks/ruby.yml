@@ -1,7 +1,7 @@
 ---
 - name: install Ruby
-  shell: HOME={{home}} PATH=$home/.rbenv/bin:$PATH rbenv install {{ruby_version}}
+  shell: HOME={{ home }} PATH=$home/.rbenv/bin:$PATH rbenv install {{ ruby_version }}
   notify: initialize rbenv
 
 - name: make ruby global
-  shell: {{home}}/.rbenv/bin/rbenv global {{ruby_version}}
+  shell: "{{ home}}/.rbenv/bin/rbenv global {{ ruby_version }}"

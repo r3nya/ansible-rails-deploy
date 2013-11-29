@@ -1,6 +1,6 @@
 ---
 - name: Install Capistrano gem
-  action: raw HOME={{home}} PATH={{home}}/.rbenv/bin:$PATH rbenv exec gem install capistrano
+  action: raw HOME={{ home }} PATH={{ home }}/.rbenv/bin:$PATH rbenv exec gem install capistrano
   notify: rbenv rehash
 
 #- name: Capistrano init

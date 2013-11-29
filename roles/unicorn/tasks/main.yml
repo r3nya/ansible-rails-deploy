@@ -1,7 +1,7 @@
 ---
 - name: Install Unicorn
-  action: raw HOME={{home}} PATH={{home}}/.rbenv/bin:$PATH rbenv exec gem install unicorn
+  action: raw HOME={{ home }} PATH={{ home }}/.rbenv/bin:$PATH rbenv exec gem install unicorn
   notify: rbenv rehash
 
 - name: Generate Unicorn config
-  template: src=unicorn_rb.j2 dest={{home}}/{{app_name}}/www/config/unicorn.rb
+  template: src=unicorn_rb.j2 dest={{ home }}/{{ app_name }}/www/config/unicorn.rb

@@ -1,18 +1,18 @@
 --- 
 - name: check rbenv
-  shell: test -d {{home}}/.rbenv && echo "yes" || echo "no"
+  shell: test -d {{ home }}/.rbenv && echo "yes" || echo "no"
   register: rbenv_installed
 
 - include: rbenv.yml
   when: rbenv_installed.stdout != "yes"
 
 - name: check ruby version
-  shell: test -d {{home}}/.rbenv/versions/{{ruby_version}} && echo "yes" || echo "no"
+  shell: test -d {{ home }}/.rbenv/versions/{{ ruby_version }} && echo "yes" || echo "no"
   register: installed_ruby_version
 
 - include: ruby.yml
   when: installed_ruby_version.stdout != "yes"
 
 - name: install bundler gem
-  shell: {{home}}/.rbenv/bin/rbenv exec gem install bundler
+  shell: "{{ home }}/.rbenv/bin/rbenv exec gem install bundler"
   notify: rbenv rehash
