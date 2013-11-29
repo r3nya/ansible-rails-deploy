@@ -98,7 +98,7 @@ view_hosts_files() {
 	echo "Перейти к деплою этих хостов? y/n"
 	read yn
 
-	[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" )
+	[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
 
 }
 
@@ -151,23 +151,15 @@ list_apps() {
 			echo "Удаляем эти приложения? y/n"
 			read yn
 
-			[ $yn = 'y' ] && ( delete_apps hosts/"${HOST_FILES[$number]}" )
+			[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
 	fi
 
 }
 
-delete_apps() {
-
-	echo "Введите пароль от sudo ..."
-	ansible-playbook -i $1 remove.yml -K
-
-}
-
-
 run_playbook() {
 
 	echo "Введите пароль от sudo ..."
-	ansible-playbook -i $1 site.yml -K
+	ansible-playbook -i $1 $2 -K
 
 }
 
