@@ -107,12 +107,10 @@ ssh_ls_apps(){
 		for h in `cat hosts/${HOST_FILES[$1]}`; do
 			host_name=`echo $h | awk -F: '{print $1}'`
 			port=`echo $h | awk -F: '{print $2}'`
-			printf "Host: %s\n" "$host_name"
-			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo "✗ Web-apps not found in /home/deploy/!" && FAIL=1
+			printf "── Host: %s\n" "$host_name"
+			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
 			echo
 		done
-
-		[ $FAIL = 1 ] && exit
 
 }
 
@@ -136,26 +134,26 @@ list_apps() {
 
 	j=0
 
-	for i in ${HOST_FILES[@]}
-		do			
-			printf "\n$j) $i\n"
-			let j++
-		done
+	for i in ${HOST_FILES[@]}; do			
+		printf "\t└── $i\t($j)\n"
+		let j++
+	done
 
 	printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
 	read number
 
-	if [ $number = 'a' ]
-		then
-			list_all_installed_apps
-		else
-			clear
-			ssh_ls_apps $number
-			
-			echo "➜ Удаляем эти приложения? y/n"
-			read yn
+	if [ $number = 'a' ]; then
+		list_all_installed_apps
+	else
+		clear
+		ssh_ls_apps $number
 
-			[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
+		[ $FAIL = 1 ] && exit
+			
+		echo "➜ Удаляем эти приложения? y/n"
+		read yn
+
+		[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
 	fi
 
 }
