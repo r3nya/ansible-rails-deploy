@@ -25,9 +25,9 @@ UNICORN_WORKERS='2'
 usage() {
 
 	printf "Использование:\n\n"
-	printf "\t-r | --run\tСделай мне хорошо!\n"
-	printf "\t-a | --apps\tПросмотр установленных приложений\n"
-	printf "\t-h | --help\tЭто сообщение\n"
+	printf "\t-r  | --run\tСделай мне хорошо!\n"
+	printf "\t-rm | --remove\tУдаление\n"
+	printf "\t-h  | --help\tЭто сообщение\n"
 }
 
 edit_vars() {
@@ -77,7 +77,7 @@ generate_config() {
 
 view_hosts_files() {
 
-	printf "Host-файлы: %s\n" "${#HOST_FILES[@]}"
+	printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
 
 	j=0
 
@@ -108,7 +108,7 @@ ssh_ls_apps(){
 			host_name=`echo $h | awk -F: '{print $1}'`
 			port=`echo $h | awk -F: '{print $2}'`
 			printf "Host: %s\n" "$host_name"
-			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo "Веб-приложения в /home/deploy/ не найдены!" && FAIL=1
+			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo "✗ Web-apps not found in /home/deploy/!" && FAIL=1
 			echo
 		done
 
@@ -121,14 +121,18 @@ list_all_installed_apps() {
 	clear
 
 	for f in ${HOST_FILES[@]}; do
-		printf "Host file: %s\n\n" "$f"
+		printf "➜ Host file: %s\n\n" "$f"
 		ssh_ls_apps $f
 	done
 }
 
+list_users() {
+	echo users!users!users!
+}
+
 list_apps() {
 
-	printf "Host-файлы: %s\n" "${#HOST_FILES[@]}"
+	printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
 
 	j=0
 
@@ -138,7 +142,7 @@ list_apps() {
 			let j++
 		done
 
-	printf "\nВведите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
+	printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
 	read number
 
 	if [ $number = 'a' ]
@@ -148,7 +152,7 @@ list_apps() {
 			clear
 			ssh_ls_apps $number
 			
-			echo "Удаляем эти приложения? y/n"
+			echo "➜ Удаляем эти приложения? y/n"
 			read yn
 
 			[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
@@ -156,9 +160,23 @@ list_apps() {
 
 }
 
+remove_something_dude() {
+
+	clear
+
+	printf "➜ Что будем удалять?\n"
+	printf "\t├── Юзера?\t(1)\n"
+	printf "\t└── Приложение?\t(2)\n"
+	read num
+
+	[ $num = 1 ] && list_users
+	[ $num = 2 ] && list_apps
+
+}
+
 run_playbook() {
 
-	echo "Введите пароль от sudo ..."
+	echo "➜ Введите пароль от sudo ..."
 	ansible-playbook -i $1 $2 -K
 
 }
@@ -178,8 +196,8 @@ case $1 in
 		generate_config
 		;;
 
-	-a|--apps)
-		list_apps
+	-rm|--remove)
+		remove_something_dude
 		;;
 
 	*)
