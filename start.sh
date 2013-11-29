@@ -14,7 +14,7 @@ USER_PASSWORD='12345'
 USER_SHELL='/bin/bash'
 USER_HOME='/home/deploy/$user'
 
-RUBY_VERSION='2.0.0-p247'
+RUBY_VERSION='2.0.0-p353'
 
 NGINX_LISTEN_ADDRESS='0.0.0.0'
 NGINX_LISTEN_PORT='80'
@@ -37,7 +37,7 @@ edit_vars() {
 	read -e -p "Git url: " -i "$GIT_URL" GIT_URL
 	read -e -p "Branch name for git checkout: " -i "$GIT_BRANCH" GIT_BRANCH
 
-	read -e -p "User name: " -i "$USER_NAME" USER
+	read -e -p "User name: " -i "$USER_NAME" USER_NAME
 	read -e -p "User password: " -i "$USER_PASSWORD" USER_PASSWORD
 	read -e -p "User shell: " -i "$USER_SHELL" USER_SHELL
 
@@ -109,7 +109,7 @@ ssh_ls_apps(){
 			host_name=`echo $h | awk -F: '{print $1}'`
 			port=`echo $h | awk -F: '{print $2}'`
 			printf "Host: %s\n" "$host_name"
-			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/*/*/www' 2>/dev/null
+			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null
 			echo
 		done
 
