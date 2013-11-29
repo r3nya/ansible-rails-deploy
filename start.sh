@@ -12,7 +12,7 @@ GIT_BRANCH='master'
 USER_NAME='deploy'
 USER_PASSWORD='12345'
 USER_SHELL='/bin/bash'
-USER_HOME='/home/deploy/$user'
+USER_HOME='/home/deploy/{{user}}'
 
 RUBY_VERSION='2.0.0-p353'
 

@@ -2,7 +2,7 @@ ENV['RAILS_ENV'] = 'production'
 
 Bluepill.application('{{ app_name }}') do |app|
 
-  deploy_to = '/home/{{ user }}/{{ app_name }}/www'
+  deploy_to = '{{ home }}/{{ app_name }}/www'
 
   app.working_dir = "#{deploy_to}/current"
   app.uid = app.gid = '{{ app_name }}'

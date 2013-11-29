@@ -17,7 +17,7 @@ set -e
 # here comes default config
 USER={{ user }}
 RAILS_ENV=production
-APP_ROOT=/home/{{ user }}/{{ app_name }}/www
+APP_ROOT={{ home }}/{{ app_name }}/www
 CMD="sudo -i -u $USER -- bash -c '$APP_ROOT/current/bin/bluepill --no-privileged"
 
 case "$1" in

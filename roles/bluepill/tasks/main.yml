@@ -1,11 +1,11 @@
 ---
 - name: Install Bluepill
-  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bluepill
+  action: raw HOME={{home}} PATH={{home}}/.rbenv/bin:$PATH rbenv exec gem install bluepill
   notify: rbenv rehash
 
 - name: Generate Bluepill config
-  template: src=blue_pill.j2 dest=$home/$app_name/www/config/blue.pill
+  template: src=blue_pill.j2 dest={{home}}/{{app_name}}/www/config/blue.pill
 
 - name: Generate Bluepill init file
-  template: src=bluepill_init.j2 dest=/etc/init.d/bluepill-{{ app_name }} mode=0755 owner=root group=root
+  template: src=bluepill_init.j2 dest=/etc/init.d/bluepill-{{app_name}} mode=0755 owner=root group=root
   sudo_user: root

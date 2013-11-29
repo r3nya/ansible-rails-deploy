@@ -6,10 +6,12 @@
   action: file path=/etc/nginx/sites-enabled/default state=absent
 
 - name: Generate Nginx config
-  template: src=nginx_conf.j2 dest=/etc/nginx/sites-available/$user-$app_name.conf
+  template: src=nginx_conf.j2 dest=/etc/nginx/sites-available/{{user}}-{{app_name}}.conf
+
+- name: Create log directory
+  shell: mkdir -p {{home}}/logs; chown www-data:www-data {{home}}/logs; chmod 775 {{home}}/logs
 
 - name: Link Nginx config
-  action: file src=/etc/nginx/sites-available/$user-$app_name.conf dest=/etc/nginx/sites-enabled/$user-$app_name.conf state=link
+  action: file src=/etc/nginx/sites-available/{{user}}-{{app_name}}.conf dest=/etc/nginx/sites-enabled/{{user}}-{{app_name}}.conf state=link
   notify:
     - restart nginx
-

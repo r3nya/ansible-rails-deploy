@@ -1,14 +1,14 @@
 ---
 - name: git clone application
-  git: repo=$git_url
-       dest=$home/$app_name/www
-       version=$git_branch
+  git: repo={{git_url}}
+       dest={{home}}/{{app_name}}/www
+       version={{git_branch}}
 
 - name: create shared directory
-  shell: mkdir -p $home/$app_name/www/shared/
+  shell: mkdir -p {{home}}/{{app_name}}/www/shared/
 
 - name: install bundler gem
-  action: raw HOME=$home PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bundler
+  action: raw HOME={{home}} PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bundler
   notify: rbenv rehash
 
 - name: bundle install
