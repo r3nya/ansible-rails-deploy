@@ -1,23 +1,18 @@
 ---
 ### Application
-
-app_name: "blog2"
-git_url: "http://git.blablalba"
-git_branch: "test"
+app_name: "awesome-site"
+git_url: "https://github.com/railstutorial/sample_app_rails_4.git"
+git_branch: "master"
 
 ### System
-
-# User
-user: "dev"
+user: "r3-test"
 user_password: "12345"
 user_shell: "/bin/bash"
-home: /home/deploy/$user
+home: "/home/deploy/$user"
+ruby_version: "2.0.0-p353"
 
 ### Config files
+nginx_listen_address: "0.0.0.0"
+nginx_listen_port: "80"
 
-# Nginx listen address
-nginx_listen_address: 0.0.0.0
-nginx_listen_port: 80
-
-# Unicorn workers number
-unicorn_workers: 2
+unicorn_workers: "2"

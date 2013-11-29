@@ -6,7 +6,7 @@
   shell: HOME=$home /tmp/rbenv-installer
 
 - name: copy gem environment setup
-  action: copy src=gemrc dest=/home/$user/.gemrc mode=0644
+  action: copy src=gemrc dest=$home/.gemrc mode=0644
 
 - name: update PATH in ~/.bashrc for rbenv
   action: lineinfile dest=$home/.bashrc line=export\ PATH="$HOME/.rbenv/bin:$PATH" regexp=PATH.*rbenv

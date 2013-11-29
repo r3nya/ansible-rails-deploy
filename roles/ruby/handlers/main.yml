@@ -1,6 +1,6 @@
 ---
 - name: initialize rbenv
-  shell: /bin/bash -c "source /home/$user/.bashrc"
+  shell: /bin/bash -c "source $home/.bashrc"
 
 - name: rbenv rehash
   shell: $home/.rbenv/bin/rbenv rehash

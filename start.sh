@@ -26,7 +26,6 @@ usage() {
 
 	printf "Использование:\n\n"
 	printf "\t-r | --run\tСделай мне хорошо!\n"
-	printf "\t-v | --view\tПросмотр хостов\n"
 	printf "\t-a | --apps\tПросмотр установленных приложений\n"
 	printf "\t-h | --help\tЭто сообщение\n"
 }
@@ -89,7 +88,7 @@ view_hosts_files() {
 			let j++
 		done
 
-	printf "Введите номер интересующего вас файла\n"
+	printf "Введите номер интересующего вас файла ...\n"
 	read number
 
 	clear
