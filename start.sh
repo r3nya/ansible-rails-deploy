@@ -108,9 +108,11 @@ ssh_ls_apps(){
 			host_name=`echo $h | awk -F: '{print $1}'`
 			port=`echo $h | awk -F: '{print $2}'`
 			printf "Host: %s\n" "$host_name"
-			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null
+			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo "Веб-приложения в /home/deploy/ не найдены!" && FAIL=1
 			echo
 		done
+
+		[ $FAIL = 1 ] && exit
 
 }
 
