@@ -11,7 +11,7 @@ git_branch: "test"
 user: "dev"
 user_password: "12345"
 user_shell: "/bin/bash"
-home: /home/$user
+home: /home/deploy/$user
 
 ### Config files
 

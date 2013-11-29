@@ -176,7 +176,7 @@ case $1 in
 		usage
 		;;
 
-	-v|--view)
+	-r|--run)
 		view_hosts_files
 		;;
 
