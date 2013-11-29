@@ -8,7 +8,7 @@
   shell: mkdir -p {{ home }}/{{ app_name }}/www/shared/
 
 - name: install bundler gem
-  action: raw HOME={{ home }} PATH=$home/.rbenv/bin:$PATH rbenv exec gem install bundler
+  action: raw HOME={{ home }} PATH={{ home }}/.rbenv/bin:$PATH rbenv exec gem install bundler
   notify: rbenv rehash
 
 - name: bundle install

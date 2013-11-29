@@ -9,7 +9,7 @@
   command: apt-get --assume-yes install python-apt
 
 - name: Install deb pkg
-  apt: pkg=$item state=latest update_cache=yes
+  apt: pkg={{ item }} state=latest update_cache=yes
   with_items:
     - build-essential
     - libssl-dev
