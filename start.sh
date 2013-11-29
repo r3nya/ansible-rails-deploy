@@ -27,6 +27,7 @@ usage() {
 	printf "Использование:\n\n"
 	printf "\t-r | --run\tСделай мне хорошо!\n"
 	printf "\t-v | --view\tПросмотр хостов\n"
+	printf "\t-a | --apps\tПросмотр установленных приложений\n"
 	printf "\t-h | --help\tЭто сообщение\n"
 }
 
