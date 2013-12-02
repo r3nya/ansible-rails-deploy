@@ -20,7 +20,7 @@ NGINX_LISTEN_ADDRESS='0.0.0.0'
 NGINX_LISTEN_PORT='80'
 UNICORN_WORKERS='2'
 
-###
+# help
 
 usage() {
   printf "Использование:\n\n"
@@ -100,6 +100,8 @@ view_hosts_files() {
 
 }
 
+# Apps
+
 ssh_ls_apps(){
 		
   for h in `cat hosts/${HOST_FILES[$1]}`; do
@@ -119,19 +121,6 @@ list_all_installed_apps() {
   for f in ${HOST_FILES[@]}; do
     printf "➜ Host file: %s\n\n" "$f"
     ssh_ls_apps $f
-  done
-}
-
-list_users() {
-  clear
-
-  # FIX ME!
-  #command="'ls -d /home/deploy/*/*/www'"
-  #message='" ✗ Web-apps not found in /home/deploy!"'
-
-  for f in ${HOST_FILES[@]}; do
-    printf "➜ Host file: %s\n\n" "$f"
-    ssh_ls_apps $f 
   done
 }
 
@@ -165,6 +154,62 @@ list_apps() {
 
 }
 
+# User
+
+ssh_ls_users(){
+		
+  for h in `cat hosts/${HOST_FILES[$1]}`; do
+    host_name=`echo $h | awk -F: '{print $1}'`
+    port=`echo $h | awk -F: '{print $2}'`
+    printf "── Host: %s" "$host_name"
+    [ $port ] && printf ":%s\n" "$port" || printf ":22\n"
+    ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
+    echo
+  done
+
+}
+
+list_all_users() {
+  clear
+
+  for f in ${HOST_FILES[@]}; do
+    printf "➜ Host file: %s\n\n" "$f"
+    ssh_ls_apps $f
+  done
+}
+
+list_users() {
+
+  printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
+
+  j=0
+
+  for i in ${HOST_FILES[@]}; do			
+    printf "\t└── $i\t($j)\n"
+    let j++
+  done
+
+  printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
+  read number
+
+  if [ $number = 'a' ]; then
+    list_all_users
+  else
+    clear
+    ssh_ls_apps $number
+
+    [ $FAIL = 1 ] && exit
+			
+    echo "➜ Удаляем этих юзеров? y/n"
+    read yn
+
+    [ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove_user.yml )
+  fi
+
+}
+
+#===
+
 remove_something_dude() {
 
   clear
@@ -179,12 +224,16 @@ remove_something_dude() {
 
 }
 
+# Ansible!
+
 run_playbook() {
 
   echo "➜ Введите пароль от sudo ..."
   ansible-playbook -i $1 $2 -K
 
 }
+
+#===
 
 case $1 in
 
