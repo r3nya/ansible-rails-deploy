@@ -156,17 +156,39 @@ list_apps() {
 
 # User
 
-ssh_ls_users(){
-		
+ssh_ls_users() {
+
   for h in `cat hosts/${HOST_FILES[$1]}`; do
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
     printf "── Host: %s" "$host_name"
     [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
-    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls /home/deploy/' 2>/dev/null || echo " ✗ Users not found in /home/deploy!" && FAIL=1
-    echo
+    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls /home/deploy/' 2>/dev/null
+    users=( `ssh $host_name -p \`[[ $port ]] && echo $port || echo 22\` 'ls /home/deploy/' 2>/dev/null` )
   done
 
+}
+
+rm_users() {
+  j=0
+  printf "\n➜ Users:\n"
+  for i in ${users[@]}; do
+    printf "└── %s\t(%s)\n" "$i" "$j"
+    let j++
+  done 
+
+  [[ ! ${users[0]} ]] && echo "Users not found!" && exit
+
+  printf "\n➜ Введите номер юзера...\n"
+  read usnum
+
+  printf "Удаляем юзера %s? y/n\n" "${users[$usnum]}"
+  read yn
+
+  if [[ $yn = 'y' ]]; then
+    printf "\nabsent_user: \"%s\"" "${users[$usnum]}" >> $SETTINGS
+    run_playbook hosts/"${HOST_FILES[$1]}" remove_user.yml
+  fi 
 }
 
 list_all_users() {
@@ -196,15 +218,9 @@ list_users() {
     list_all_users
   else
     clear
-    ssh_ls_users $number
-
-    [[ $FAIL = 1 ]] && exit
-			
-    echo "➜ Удаляем юзеров отсюда? y/n"
-    read yn
-
-    [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove_user.yml )
-  fi
+    ssh_ls_users "$number"
+    rm_users "$number"
+	fi
 
 }
 

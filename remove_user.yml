@@ -1,0 +1,8 @@
+---
+- name: Remove user
+  hosts: all
+  sudo: yes
+
+  tasks:
+  - name: Remove user!
+    user: name={{ absent_user }} state=absent remove=yes

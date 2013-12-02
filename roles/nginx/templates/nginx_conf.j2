@@ -6,8 +6,8 @@ server {
 
     server_name {{ app_name }};
 
-    access_log {{ home }}/{{ app_name }}/logs/{{ app_name }}_access_nginx.log;
-    error_log {{ home }}/{{ app_name }}/logs/{{ app_name }}_error_nginx.log error;
+    access_log /var/log/nginx/{{ app_name }}-{{ user }}_access_nginx.log;
+    error_log /var/log/nginx/{{ app_name }}-{{ user }}_error_nginx.log error;
 
     location ~* ^.+\.(jpg|jpeg|gif|png|svg|js|css|mp3|ogg|mpe?g|avi|zip|gz|bz2?|rar)$ {
         root {{ home }}/{{ app_name }}/www/public/;
