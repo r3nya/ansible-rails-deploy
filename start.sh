@@ -81,12 +81,11 @@ view_hosts_files() {
 
 	j=0
 
-	for i in ${HOST_FILES[@]}
-		do			
-			printf "\n$j) $i\n"
-			cat hosts/"${HOST_FILES[$j]}"
-			let j++
-		done
+	for i in ${HOST_FILES[@]}; do			
+		printf "\n$j) $i\n"
+		cat hosts/"${HOST_FILES[$j]}"
+		let j++
+  done
 
 	printf "Введите номер интересующего вас файла ...\n"
 	read number
@@ -107,7 +106,8 @@ ssh_ls_apps(){
 		for h in `cat hosts/${HOST_FILES[$1]}`; do
 			host_name=`echo $h | awk -F: '{print $1}'`
 			port=`echo $h | awk -F: '{print $2}'`
-			printf "── Host: %s\n" "$host_name"
+			printf "── Host: %s" "$host_name"
+      [ $port ] && printf ":%s\n" "$port" || printf ":22\n"
 			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
 			echo
 		done
@@ -115,7 +115,6 @@ ssh_ls_apps(){
 }
 
 list_all_installed_apps() {
-
 	clear
 
 	for f in ${HOST_FILES[@]}; do
@@ -125,7 +124,16 @@ list_all_installed_apps() {
 }
 
 list_users() {
-	echo users!users!users!
+	clear
+
+  # FIX ME!
+  #command="'ls -d /home/deploy/*/*/www'"
+  #message='" ✗ Web-apps not found in /home/deploy!"'
+
+	for f in ${HOST_FILES[@]}; do
+		printf "➜ Host file: %s\n\n" "$f"
+		ssh_ls_apps $f 
+	done
 }
 
 list_apps() {
