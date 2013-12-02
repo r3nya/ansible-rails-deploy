@@ -87,16 +87,16 @@ view_hosts_files() {
   done
 
   printf "Введите номер интересующего вас файла ...\n"
-    read number
+  read number
 
-    clear
-    echo "Deploy hosts:"
-    cat hosts/"${HOST_FILES[$number]}"
+  clear
+  echo "Deploy hosts:"
+  cat hosts/"${HOST_FILES[$number]}"
 	
-    echo "Перейти к деплою этих хостов? y/n"
-    read yn
+  echo "Перейти к деплою этих хостов? y/n"
+  read yn
 
-    [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
+  [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
 
 }
 
@@ -220,7 +220,7 @@ list_users() {
     clear
     ssh_ls_users "$number"
     rm_users "$number"
-	fi
+  fi
 
 }
 
