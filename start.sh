@@ -96,7 +96,7 @@ view_hosts_files() {
     echo "Перейти к деплою этих хостов? y/n"
     read yn
 
-    [ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
+    [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
 
 }
 
@@ -108,8 +108,8 @@ ssh_ls_apps(){
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
     printf "── Host: %s" "$host_name"
-    [ $port ] && printf ":%s\n" "$port" || printf ":22\n"
-    ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
+    [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
+    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
     echo
   done
 
@@ -138,18 +138,18 @@ list_apps() {
   printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
   read number
 
-  if [ $number = 'a' ]; then
+  if [[ $number = 'a' ]]; then
     list_all_installed_apps
   else
     clear
     ssh_ls_apps $number
 
-    [ $FAIL = 1 ] && exit
+    [[ $FAIL = 1 ]] && exit
 			
     echo "➜ Удаляем эти приложения? y/n"
     read yn
 
-    [ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
+    [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
   fi
 
 }
@@ -162,8 +162,8 @@ ssh_ls_users(){
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
     printf "── Host: %s" "$host_name"
-    [ $port ] && printf ":%s\n" "$port" || printf ":22\n"
-    ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
+    [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
+    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls /home/deploy/' 2>/dev/null || echo " ✗ Users not found in /home/deploy!" && FAIL=1
     echo
   done
 
@@ -174,7 +174,7 @@ list_all_users() {
 
   for f in ${HOST_FILES[@]}; do
     printf "➜ Host file: %s\n\n" "$f"
-    ssh_ls_apps $f
+    ssh_ls_users $f
   done
 }
 
@@ -192,18 +192,18 @@ list_users() {
   printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
   read number
 
-  if [ $number = 'a' ]; then
+  if [[ $number = 'a' ]]; then
     list_all_users
   else
     clear
-    ssh_ls_apps $number
+    ssh_ls_users $number
 
-    [ $FAIL = 1 ] && exit
+    [[ $FAIL = 1 ]] && exit
 			
-    echo "➜ Удаляем этих юзеров? y/n"
+    echo "➜ Удаляем юзеров отсюда? y/n"
     read yn
 
-    [ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove_user.yml )
+    [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove_user.yml )
   fi
 
 }
@@ -219,8 +219,8 @@ remove_something_dude() {
   printf "\t└── Приложение?\t(2)\n"
   read num
 
-  [ $num = 1 ] && list_users
-  [ $num = 2 ] && list_apps
+  [[ $num = 1 ]] && list_users
+  [[ $num = 2 ]] && list_apps
 
 }
 
