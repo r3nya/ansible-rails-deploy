@@ -23,11 +23,10 @@ UNICORN_WORKERS='2'
 ###
 
 usage() {
-
-	printf "Использование:\n\n"
-	printf "\t-r  | --run\tСделай мне хорошо!\n"
-	printf "\t-rm | --remove\tУдаление\n"
-	printf "\t-h  | --help\tЭто сообщение\n"
+  printf "Использование:\n\n"
+  printf "\t-r  | --run\tСделай мне хорошо!\n"
+  printf "\t-rm | --remove\tУдаление\n"
+  printf "\t-h  | --help\tЭто сообщение\n"
 }
 
 edit_vars() {
@@ -82,7 +81,7 @@ view_hosts_files() {
 	j=0
 
 	for i in ${HOST_FILES[@]}; do			
-		printf "\n$j) $i\n"
+    printf "\n$j) $i\n"
 		cat hosts/"${HOST_FILES[$j]}"
 		let j++
   done
@@ -103,48 +102,48 @@ view_hosts_files() {
 
 ssh_ls_apps(){
 		
-		for h in `cat hosts/${HOST_FILES[$1]}`; do
-			host_name=`echo $h | awk -F: '{print $1}'`
-			port=`echo $h | awk -F: '{print $2}'`
-			printf "── Host: %s" "$host_name"
-      [ $port ] && printf ":%s\n" "$port" || printf ":22\n"
-			ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
-			echo
-		done
+  for h in `cat hosts/${HOST_FILES[$1]}`; do
+    host_name=`echo $h | awk -F: '{print $1}'`
+    port=`echo $h | awk -F: '{print $2}'`
+    printf "── Host: %s" "$host_name"
+    [ $port ] && printf ":%s\n" "$port" || printf ":22\n"
+    ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
+		echo
+  done
 
 }
 
 list_all_installed_apps() {
 	clear
 
-	for f in ${HOST_FILES[@]}; do
-		printf "➜ Host file: %s\n\n" "$f"
+  for f in ${HOST_FILES[@]}; do
+  	printf "➜ Host file: %s\n\n" "$f"
 		ssh_ls_apps $f
 	done
 }
 
 list_users() {
-	clear
+  clear
 
   # FIX ME!
   #command="'ls -d /home/deploy/*/*/www'"
   #message='" ✗ Web-apps not found in /home/deploy!"'
 
-	for f in ${HOST_FILES[@]}; do
-		printf "➜ Host file: %s\n\n" "$f"
-		ssh_ls_apps $f 
-	done
+  for f in ${HOST_FILES[@]}; do
+    printf "➜ Host file: %s\n\n" "$f"
+    ssh_ls_apps $f 
+  done
 }
 
 list_apps() {
 
-	printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
+  printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
 
-	j=0
+  j=0
 
-	for i in ${HOST_FILES[@]}; do			
-		printf "\t└── $i\t($j)\n"
-		let j++
+  for i in ${HOST_FILES[@]}; do			
+    printf "\t└── $i\t($j)\n"
+    let j++
 	done
 
 	printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
@@ -162,7 +161,7 @@ list_apps() {
 		read yn
 
 		[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
-	fi
+  fi
 
 }
 
@@ -189,26 +188,28 @@ run_playbook() {
 
 case $1 in
 
-	-h|--help)
-		usage
-		;;
+  -h|--help)
+    usage
+    ;;
 
-	-r|--run)
-		view_hosts_files
-		;;
+  -r|--run)
+    edit_vars
+    generate_config
+    view_hosts_files
+    ;;
 
-	-g|--generate)
-		edit_vars
-		generate_config
-		;;
+  -g|--generate)
+    edit_vars
+    generate_config
+    ;;
 
-	-rm|--remove)
-		remove_something_dude
-		;;
+  -rm|--remove)
+    remove_something_dude
+    ;;
 
-	*)
-		usage
-		;;
+  *)
+    usage
+    ;;
 
 esac
 
