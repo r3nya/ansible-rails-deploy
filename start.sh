@@ -31,72 +31,72 @@ usage() {
 
 edit_vars() {
 
-	read -e -p "Application name: " -i "$APP_NAME" APP_NAME
-	read -e -p "Git url: " -i "$GIT_URL" GIT_URL
-	read -e -p "Branch name for git checkout: " -i "$GIT_BRANCH" GIT_BRANCH
+  read -e -p "Application name: " -i "$APP_NAME" APP_NAME
+  read -e -p "Git url: " -i "$GIT_URL" GIT_URL
+  read -e -p "Branch name for git checkout: " -i "$GIT_BRANCH" GIT_BRANCH
 
-	read -e -p "User name: " -i "$USER_NAME" USER_NAME
-	read -e -p "User password: " -i "$USER_PASSWORD" USER_PASSWORD
-	read -e -p "User shell: " -i "$USER_SHELL" USER_SHELL
+  read -e -p "User name: " -i "$USER_NAME" USER_NAME
+  read -e -p "User password: " -i "$USER_PASSWORD" USER_PASSWORD
+  read -e -p "User shell: " -i "$USER_SHELL" USER_SHELL
 
-	read -e -p "Ruby version: " -i "$RUBY_VERSION" RUBY_VERSION
+  read -e -p "Ruby version: " -i "$RUBY_VERSION" RUBY_VERSION
 
-	read -e -p "Nginx listen address: " -i "$NGINX_LISTEN_ADDRESS" NGINX_LISTEN_ADDRESS
-	read -e -p "Nginx listen port: " -i "$NGINX_LISTEN_PORT" NGINX_LISTEN_PORT
-	read -e -p "Unicorn workers: " -i "$UNICORN_WORKERS" UNICORN_WORKERS
+  read -e -p "Nginx listen address: " -i "$NGINX_LISTEN_ADDRESS" NGINX_LISTEN_ADDRESS
+  read -e -p "Nginx listen port: " -i "$NGINX_LISTEN_PORT" NGINX_LISTEN_PORT
+  read -e -p "Unicorn workers: " -i "$UNICORN_WORKERS" UNICORN_WORKERS
 
  }
 
 generate_config() {
 
-	echo "---" > $SETTINGS
+  echo "---" > $SETTINGS
 
-	printf "### Application\n" >> $SETTINGS
+  printf "### Application\n" >> $SETTINGS
 
-	printf "app_name: \"%s\"\n" "$APP_NAME"	>> $SETTINGS
-	printf "git_url: \"%s\"\n" "$GIT_URL"	>> $SETTINGS
-	printf "git_branch: \"%s\"\n" "$GIT_BRANCH" >> $SETTINGS
+  printf "app_name: \"%s\"\n" "$APP_NAME"	>> $SETTINGS
+  printf "git_url: \"%s\"\n" "$GIT_URL"	>> $SETTINGS
+  printf "git_branch: \"%s\"\n" "$GIT_BRANCH" >> $SETTINGS
 	
-	printf "\n### System\n" >> $SETTINGS
+  printf "\n### System\n" >> $SETTINGS
 
-	printf "user: \"%s\"\n" "$USER_NAME"	>> $SETTINGS
-	printf "user_password: \"%s\"\n" "$USER_PASSWORD" >> $SETTINGS
-	printf "user_shell: \"%s\"\n" "$USER_SHELL" >> $SETTINGS
-	printf "home: \"%s\"\n" "$USER_HOME" >> $SETTINGS
+  printf "user: \"%s\"\n" "$USER_NAME"	>> $SETTINGS
+  printf "user_password: \"%s\"\n" "$USER_PASSWORD" >> $SETTINGS
+  printf "user_shell: \"%s\"\n" "$USER_SHELL" >> $SETTINGS
+  printf "home: \"%s\"\n" "$USER_HOME" >> $SETTINGS
 
-	printf "ruby_version: \"%s\"\n" "$RUBY_VERSION" >> $SETTINGS
+  printf "ruby_version: \"%s\"\n" "$RUBY_VERSION" >> $SETTINGS
 
-	printf "\n### Config files\n" >> $SETTINGS
+  printf "\n### Config files\n" >> $SETTINGS
 
-	printf "nginx_listen_address: \"%s\"\n" "$NGINX_LISTEN_ADDRESS"	>> $SETTINGS
-	printf "nginx_listen_port: \"%s\"\n\n" "$NGINX_LISTEN_PORT"		>> $SETTINGS
-	printf "unicorn_workers: \"%s\"" "$UNICORN_WORKERS" >> $SETTINGS
+  printf "nginx_listen_address: \"%s\"\n" "$NGINX_LISTEN_ADDRESS"	>> $SETTINGS
+  printf "nginx_listen_port: \"%s\"\n\n" "$NGINX_LISTEN_PORT"		>> $SETTINGS
+  printf "unicorn_workers: \"%s\"" "$UNICORN_WORKERS" >> $SETTINGS
 
 }
 
 view_hosts_files() {
 
-	printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
+  printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
 
-	j=0
+  j=0
 
-	for i in ${HOST_FILES[@]}; do			
+  for i in ${HOST_FILES[@]}; do			
     printf "\n$j) $i\n"
-		cat hosts/"${HOST_FILES[$j]}"
-		let j++
+    cat hosts/"${HOST_FILES[$j]}"
+    let j++
   done
 
-	printf "Введите номер интересующего вас файла ...\n"
-	read number
+  printf "Введите номер интересующего вас файла ...\n"
+    read number
 
-	clear
-	echo "Deploy hosts:"
-	cat hosts/"${HOST_FILES[$number]}"
+    clear
+    echo "Deploy hosts:"
+    cat hosts/"${HOST_FILES[$number]}"
 	
-	echo "Перейти к деплою этих хостов? y/n"
-	read yn
+    echo "Перейти к деплою этих хостов? y/n"
+    read yn
 
-	[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
+    [ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
 
 }
 
@@ -108,18 +108,18 @@ ssh_ls_apps(){
     printf "── Host: %s" "$host_name"
     [ $port ] && printf ":%s\n" "$port" || printf ":22\n"
     ssh $host_name -p `[ $port ] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
-		echo
+    echo
   done
 
 }
 
 list_all_installed_apps() {
-	clear
+  clear
 
   for f in ${HOST_FILES[@]}; do
-  	printf "➜ Host file: %s\n\n" "$f"
-		ssh_ls_apps $f
-	done
+    printf "➜ Host file: %s\n\n" "$f"
+    ssh_ls_apps $f
+  done
 }
 
 list_users() {
@@ -144,45 +144,45 @@ list_apps() {
   for i in ${HOST_FILES[@]}; do			
     printf "\t└── $i\t($j)\n"
     let j++
-	done
+  done
 
-	printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
-	read number
+  printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
+  read number
 
-	if [ $number = 'a' ]; then
-		list_all_installed_apps
-	else
-		clear
-		ssh_ls_apps $number
+  if [ $number = 'a' ]; then
+    list_all_installed_apps
+  else
+    clear
+    ssh_ls_apps $number
 
-		[ $FAIL = 1 ] && exit
+    [ $FAIL = 1 ] && exit
 			
-		echo "➜ Удаляем эти приложения? y/n"
-		read yn
+    echo "➜ Удаляем эти приложения? y/n"
+    read yn
 
-		[ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
+    [ $yn = 'y' ] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
   fi
 
 }
 
 remove_something_dude() {
 
-	clear
+  clear
 
-	printf "➜ Что будем удалять?\n"
-	printf "\t├── Юзера?\t(1)\n"
-	printf "\t└── Приложение?\t(2)\n"
-	read num
+  printf "➜ Что будем удалять?\n"
+  printf "\t├── Юзера?\t(1)\n"
+  printf "\t└── Приложение?\t(2)\n"
+  read num
 
-	[ $num = 1 ] && list_users
-	[ $num = 2 ] && list_apps
+  [ $num = 1 ] && list_users
+  [ $num = 2 ] && list_apps
 
 }
 
 run_playbook() {
 
-	echo "➜ Введите пароль от sudo ..."
-	ansible-playbook -i $1 $2 -K
+  echo "➜ Введите пароль от sudo ..."
+  ansible-playbook -i $1 $2 -K
 
 }
 
