@@ -76,6 +76,8 @@ generate_config() {
 
 view_hosts_files() {
 
+  clear
+
   printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
 
   j=0
@@ -109,7 +111,7 @@ ssh_ls_apps(){
     port=`echo $h | awk -F: '{print $2}'`
     printf "── Host: %s" "$host_name"
     [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
-    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || echo " ✗ Web-apps not found in /home/deploy!" && FAIL=1
+    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( echo " ✗ Web-apps not found in /home/deploy!" && return 0 )
     echo
   done
 
@@ -144,7 +146,7 @@ list_apps() {
     clear
     ssh_ls_apps $number
 
-    [[ $FAIL = 1 ]] && exit
+    [[ $? -eq 0 ]] || exit
 			
     echo "➜ Удаляем эти приложения? y/n"
     read yn
@@ -191,14 +193,15 @@ rm_users() {
   fi 
 }
 
-list_all_users() {
-  clear
+#list_all_users() {
+#  clear
 
-  for f in ${HOST_FILES[@]}; do
-    printf "➜ Host file: %s\n\n" "$f"
-    ssh_ls_users $f
-  done
-}
+#  for f in ${HOST_FILES[@]}; do
+#    printf "➜ Host file: %s\n\n" "$f"
+#    ssh_ls_users $f
+#  done
+#  rm_users
+#}
 
 list_users() {
 
@@ -211,16 +214,17 @@ list_users() {
     let j++
   done
 
-  printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
+  printf "\n➜ Введите номер интересующего вас host-файла...\n"
+#  printf "Или просмотреть их все? (a)\n"
   read number
 
-  if [[ $number = 'a' ]]; then
-    list_all_users
-  else
+#  if [[ $number = 'a' ]]; then
+#    list_all_users
+#  else
     clear
     ssh_ls_users "$number"
     rm_users "$number"
-  fi
+#  fi
 
 }
 
