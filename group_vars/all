@@ -5,7 +5,7 @@ git_url: "https://github.com/railstutorial/sample_app_rails_4.git"
 git_branch: "master"
 
 ### System
-user: "azaza"
+user: "mimimi"
 user_password: "12345"
 user_shell: "/bin/bash"
 home: "/home/deploy/{{ user }}"
@@ -16,4 +16,3 @@ nginx_listen_address: "0.0.0.0"
 nginx_listen_port: "80"
 
 unicorn_workers: "2"
-absent_user: "azaza"

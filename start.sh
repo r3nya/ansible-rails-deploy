@@ -106,13 +106,12 @@ view_hosts_files() {
 
 ssh_ls_apps(){
 		
-  for h in `cat hosts/${HOST_FILES[$1]}`; do
+  for h in `cat hosts/${HOST_FILES[$1]} | grep -v ^#`; do
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
     printf "── Host: %s" "$host_name"
     [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
-    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( echo " ✗ Web-apps not found in /home/deploy!" && return 0 )
-    echo
+    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( echo " ✗ Web-apps not found in /home/deploy!"; FAIL='1')
   done
 
 }
@@ -146,7 +145,9 @@ list_apps() {
     clear
     ssh_ls_apps $number
 
-    [[ $? -eq 0 ]] || exit
+    set -e
+
+    [[ $FAIL ]] && exit
 			
     echo "➜ Удаляем эти приложения? y/n"
     read yn
@@ -160,7 +161,7 @@ list_apps() {
 
 ssh_ls_users() {
 
-  for h in `cat hosts/${HOST_FILES[$1]}`; do
+  for h in `cat hosts/${HOST_FILES[$1]} | grep -v ^#`; do
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
     printf "── Host: %s" "$host_name"

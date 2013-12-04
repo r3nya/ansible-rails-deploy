@@ -1,3 +1,6 @@
-[web]
+# Examples:
+# ip
+# hostname
+# ip:port
 webhost
 webhost-2:666
