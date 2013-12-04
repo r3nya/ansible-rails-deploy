@@ -120,8 +120,8 @@ ssh_ls_apps(){
   for h in `cat hosts/${HOST_FILES[$1]} | grep -v ^#`; do
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
-    printf "\e[0;32m── Host: %s\e[0m" "$host_name"
-    [[ $port ]] && printf "\e[0;32m:%s\e[0m\n" "$port" || printf "\e[0;32m:22\e[0m\n"
+    printf "${G}── Host: %s${UC}" "$host_name"
+    [[ $port ]] && printf "${G}:%s${UC}\n" "$port" || printf "${G}:22${UC}\n"
     ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( echo " ✗ Web-apps not found in /home/deploy!"; FAIL='1')
   done
 
@@ -239,10 +239,10 @@ view_apps() {
         [[ $port ]] && printf "${C}:%s${UC}" "$port" || printf "${C}:22${UC}"
 
         printf "\n└─ Users: "
-        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls /home/deploy/' 2>/dev/null || ( printf "${R}\t✗ Not found!${UC}" )
+        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls /home/deploy/' 2>/dev/null || ( printf "${R}\t✗ Not found!${UC}" )
 
         printf "\n└─ Apps: "
-        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R}\t✗ Web-apps not found in /home/deploy!${UC}")
+        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R}\t✗ Web-apps not found in /home/deploy!${UC}")
       done
   done  
 }
