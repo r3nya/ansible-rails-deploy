@@ -22,13 +22,13 @@ UNICORN_WORKERS='2'
 
 # Colors
 
-R="\e[0;31m"	# red
-G="\e[0;32m"	# green
-Y="\e[0;33m"	# yellow
-B="\e[0;34m"	# blue
-M="\e[0;35m"	# magenta
-C="\e[0;36m"	# cyan
-UC="\e[0m" # user color
+R="\e[0;31m"  # red
+G="\e[0;32m"  # green
+Y="\e[0;33m"  # yellow
+B="\e[0;34m"  # blue
+M="\e[0;35m"  # magenta
+C="\e[0;36m"  # cyan
+UC="\e[0m"  # user color
 
 # help
 
