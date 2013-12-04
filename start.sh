@@ -20,12 +20,23 @@ NGINX_LISTEN_ADDRESS='0.0.0.0'
 NGINX_LISTEN_PORT='80'
 UNICORN_WORKERS='2'
 
+# Colors
+
+R="\e[0;31m"	# red
+G="\e[0;32m"	# green
+Y="\e[0;33m"	# yellow
+B="\e[0;34m"	# blue
+M="\e[0;35m"	# magenta
+C="\e[0;36m"	# cyan
+UC="\e[0m" # user color
+
 # help
 
 usage() {
-  printf "Использование:\n\n"
+  printf "$GИспользование:$UC\n\n"
   printf "\t-r  | --run\tСделай мне хорошо!\n"
   printf "\t-rm | --remove\tУдаление\n"
+  printf "\t-a  | --apps\tПросмотр установленных приложений\n"
   printf "\t-h  | --help\tЭто сообщение\n"
 }
 
@@ -109,8 +120,8 @@ ssh_ls_apps(){
   for h in `cat hosts/${HOST_FILES[$1]} | grep -v ^#`; do
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
-    printf "── Host: %s" "$host_name"
-    [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
+    printf "\e[0;32m── Host: %s\e[0m" "$host_name"
+    [[ $port ]] && printf "\e[0;32m:%s\e[0m\n" "$port" || printf "\e[0;32m:22\e[0m\n"
     ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( echo " ✗ Web-apps not found in /home/deploy!"; FAIL='1')
   done
 
@@ -120,7 +131,7 @@ list_all_installed_apps() {
   clear
 
   for f in ${HOST_FILES[@]}; do
-    printf "➜ Host file: %s\n\n" "$f"
+    printf "\n\e[0;32m ➜ Host file: %s\e[0m\n\n" "$f"
     ssh_ls_apps $f
   done
 }
@@ -194,16 +205,6 @@ rm_users() {
   fi 
 }
 
-#list_all_users() {
-#  clear
-
-#  for f in ${HOST_FILES[@]}; do
-#    printf "➜ Host file: %s\n\n" "$f"
-#    ssh_ls_users $f
-#  done
-#  rm_users
-#}
-
 list_users() {
 
   printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
@@ -216,17 +217,34 @@ list_users() {
   done
 
   printf "\n➜ Введите номер интересующего вас host-файла...\n"
-#  printf "Или просмотреть их все? (a)\n"
+
   read number
 
-#  if [[ $number = 'a' ]]; then
-#    list_all_users
-#  else
-    clear
-    ssh_ls_users "$number"
-    rm_users "$number"
-#  fi
+  clear
+   ssh_ls_users "$number"
+   rm_users "$number"
+}
 
+#===
+
+view_apps() { 
+  for i in ${HOST_FILES[@]}; do     
+    printf "\n${G}➜ Host file: $i ${UC}\n"
+      for h in `cat hosts/$i | grep -v ^#`; do
+        host_name=`echo $h | awk -F: '{print $1}'`
+        port=`echo $h | awk -F: '{print $2}'`
+
+        printf "${C}\n─ Host: %s${UC}" "$host_name"
+
+        [[ $port ]] && printf "${C}:%s${UC}" "$port" || printf "${C}:22${UC}"
+
+        printf "\n└─ Users: "
+        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls /home/deploy/' 2>/dev/null || ( printf "${R}\t✗ Not found!${UC}" )
+
+        printf "\n└─ Apps: "
+        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R}\t✗ Web-apps not found in /home/deploy!${UC}")
+      done
+  done  
 }
 
 #===
@@ -275,6 +293,10 @@ case $1 in
 
   -rm|--remove)
     remove_something_dude
+    ;;
+
+  -a|--apps)
+    view_apps
     ;;
 
   *)
