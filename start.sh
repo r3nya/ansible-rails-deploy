@@ -89,24 +89,24 @@ view_hosts_files() {
 
   clear
 
-  printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
+  printf "${G}➜ Host-файлы: %s${UC}\n" "${#HOST_FILES[@]}"
 
   j=0
 
   for i in ${HOST_FILES[@]}; do			
-    printf "\n$j) $i\n"
-    cat hosts/"${HOST_FILES[$j]}"
+    printf "${C}\n$j) $i\n${UC}"
+    cat hosts/"${HOST_FILES[$j]}" | grep -v ^#
     let j++
   done
 
-  printf "Введите номер интересующего вас файла ...\n"
+  printf "${G}➜ Введите номер интересующего вас файла ...${UC}\n"
   read number
 
   clear
-  echo "Deploy hosts:"
+  echo "${C}Deploy hosts:${UC}"
   cat hosts/"${HOST_FILES[$number]}"
 	
-  echo "Перейти к деплою этих хостов? y/n"
+  echo "${R}Перейти к деплою этих хостов? y/n${UC}"
   read yn
 
   [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
@@ -131,14 +131,14 @@ list_all_installed_apps() {
   clear
 
   for f in ${HOST_FILES[@]}; do
-    printf "\n\e[0;32m ➜ Host file: %s\e[0m\n\n" "$f"
+    printf "\n${G} ➜ Host file: %s${UC}\n\n" "$f"
     ssh_ls_apps $f
   done
 }
 
 list_apps() {
 
-  printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
+  printf "${G}➜ Host-файлы: %s${UC}\n" "${#HOST_FILES[@]}"
 
   j=0
 
@@ -147,7 +147,7 @@ list_apps() {
     let j++
   done
 
-  printf "\n➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)\n"
+  printf "\n${G}➜ Введите номер интересующего вас host-файла...\nИли просмотреть их все? (a)${UC}\n"
   read number
 
   if [[ $number = 'a' ]]; then
@@ -160,7 +160,7 @@ list_apps() {
 
     [[ $FAIL ]] && exit
 			
-    echo "➜ Удаляем эти приложения? y/n"
+    echo "${R}➜ Удаляем эти приложения? y/n${UC}"
     read yn
 
     [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
@@ -175,7 +175,7 @@ ssh_ls_users() {
   for h in "`cat hosts/${HOST_FILES[$1]} | grep -v ^#`"; do
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
-    printf "── Host: %s" "$host_name"
+    printf "${C}── Host:${UC}\n %s" "$host_name"
     [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
     ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls /home/deploy/' 2>/dev/null
     users=( `ssh $host_name -p \`[[ $port ]] && echo $port || echo 22\` 'ls /home/deploy/' 2>/dev/null` )
@@ -185,18 +185,18 @@ ssh_ls_users() {
 
 rm_users() {
   j=0
-  printf "\n➜ Users:\n"
+  printf "\n${G}➜ Users:${UC}\n"
   for i in ${users[@]}; do
     printf "└── %s\t(%s)\n" "$i" "$j"
     let j++
   done 
 
-  [[ ! ${users[0]} ]] && echo "Users not found!" && exit
+  [[ ! ${users[0]} ]] && printf "${R} ✗ Users not found!${UC}\n" && exit
 
-  printf "\n➜ Введите номер юзера...\n"
+  printf "\n${G}➜ Введите номер юзера...${UC}\n"
   read usnum
 
-  printf "Удаляем юзера %s? y/n\n" "${users[$usnum]}"
+  printf "${R}Удаляем юзера %s? y/n ${UC}\n" "${users[$usnum]}"
   read yn
 
   if [[ $yn = 'y' ]]; then
@@ -207,22 +207,22 @@ rm_users() {
 
 list_users() {
 
-  printf "➜ Host-файлы: %s\n" "${#HOST_FILES[@]}"
+  printf "${G}➜ Host-файлы: %s${UC}\n" "${#HOST_FILES[@]}"
 
   j=0
 
   for i in ${HOST_FILES[@]}; do			
-    printf "\t└── $i\t($j)\n"
+    printf "\t└── ${C}$i\t($j)${UC}\n"
     let j++
   done
 
-  printf "\n➜ Введите номер интересующего вас host-файла...\n"
+  printf "\n${G}➜ Введите номер интересующего вас host-файла...${UC}\n"
 
   read number
 
   clear
-   ssh_ls_users "$number"
-   rm_users "$number"
+  ssh_ls_users "$number"
+  rm_users "$number"
 }
 
 #===
@@ -253,9 +253,9 @@ remove_something_dude() {
 
   clear
 
-  printf "➜ Что будем удалять?\n"
-  printf "\t├── Юзера?\t(1)\n"
-  printf "\t└── Приложение?\t(2)\n"
+  printf "${G}➜ Что будем удалять?${UC}\n"
+  printf "\t├── ${C}Юзера?\t(1)${UC}\n"
+  printf "\t└── ${C}Приложение?\t(2)${UC}\n"
   read num
 
   [[ $num = 1 ]] && list_users
@@ -267,7 +267,7 @@ remove_something_dude() {
 
 run_playbook() {
 
-  echo "➜ Введите пароль от sudo ..."
+  echo "${R}➜ Введите пароль от sudo ...${UC}"
   ansible-playbook -i $1 $2 -K
 
 }
