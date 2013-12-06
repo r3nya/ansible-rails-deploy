@@ -93,7 +93,7 @@ view_hosts_files() {
 
   j=0
 
-  for i in ${HOST_FILES[@]}; do			
+  for i in "${HOST_FILES[@]}"; do			
     printf "${C}\n$j) $i\n${UC}"
     cat hosts/"${HOST_FILES[$j]}" | grep -v ^#
     let j++
@@ -103,23 +103,27 @@ view_hosts_files() {
   read number
 
   clear
-  echo "${C}Deploy hosts:${UC}"
+  printf "${G}Deploy hosts:${UC}\n"
   cat hosts/"${HOST_FILES[$number]}"
 	
-  echo "${R}Перейти к деплою этих хостов? y/n${UC}"
+  printf "${R}Перейти к деплою этих хостов? y/n${UC}\n"
   read yn
 
   [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" site.yml )
 
 }
 
+get_host() {
+  host_name="`echo $1 | awk -F: '{print $1}'`"
+  port="`echo $1 | awk -F: '{print $2}'`"
+}
+
 # Apps
 
-ssh_ls_apps(){
+ssh_ls_apps() {
 		
   for h in "`cat hosts/${HOST_FILES[$1]} | grep -v ^#`"; do
-    host_name=`echo $h | awk -F: '{print $1}'`
-    port=`echo $h | awk -F: '{print $2}'`
+    get_host "$h"
     printf "${G}── Host: %s${UC}" "$host_name"
     [[ $port ]] && (printf "${G}:%s${UC}\n" "$port") || (printf "${G}:22${UC}\n")
     ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R} ✗ Web-apps not found in /home/deploy!${UC}\n"; FAIL='1')
@@ -132,7 +136,7 @@ list_all_installed_apps() {
 
   j=0
 
-  for f in ${HOST_FILES[@]}; do
+  for f in "${HOST_FILES[@]}"; do
     printf "\n${G} ➜ Host file: %s - %s${UC}\n\n" "$j" "$f"
     ssh_ls_apps "$j"
     let j++
@@ -145,7 +149,7 @@ list_apps() {
 
   j=0
 
-  for i in ${HOST_FILES[@]}; do			
+  for i in "${HOST_FILES[@]}"; do			
     printf "\t└── ${C}$i${UC}\t($j)\n"
     let j++
   done
@@ -176,11 +180,7 @@ list_apps() {
 ssh_ls_users() {
 
   for h in "`cat hosts/${HOST_FILES[$1]} | grep -v ^#`"; do
-    host_name=`echo $h | awk -F: '{print $1}'`
-    port=`echo $h | awk -F: '{print $2}'`
-    printf "${C}── Host:${UC}\n %s" "$host_name"
-    [[ $port ]] && printf ":%s\n" "$port" || printf ":22\n"
-    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls /home/deploy/' 2>/dev/null
+    get_host $h
     users=( `ssh $host_name -p \`[[ $port ]] && echo $port || echo 22\` 'ls /home/deploy/' 2>/dev/null` )
   done
 
@@ -188,8 +188,8 @@ ssh_ls_users() {
 
 rm_users() {
   j=0
-  printf "\n${G}➜ Users:${UC}\n"
-  for i in ${users[@]}; do
+  printf "${G}➜ Users:${UC}\n"
+  for i in "${users[@]}"; do
     printf "└── %s\t(%s)\n" "$i" "$j"
     let j++
   done 
@@ -199,7 +199,7 @@ rm_users() {
   printf "\n${G}➜ Введите номер юзера...${UC}\n"
   read usnum
 
-  printf "${R}Удаляем юзера %s? y/n ${UC}\n" "${users[$usnum]}"
+  printf "${R}Удаляем юзера '%s'? y/n ${UC}\n" "${users[$usnum]}"
   read yn
 
   if [[ $yn = 'y' ]]; then
@@ -209,7 +209,6 @@ rm_users() {
 }
 
 list_users() {
-
   printf "${G}➜ Host-файлы: %s${UC}\n" "${#HOST_FILES[@]}"
 
   j=0
@@ -231,14 +230,12 @@ list_users() {
 #===
 
 view_apps() { 
-  for i in ${HOST_FILES[@]}; do     
+  for i in "${HOST_FILES[@]}"; do     
     printf "\n${G}➜ Host file: $i ${UC}\n"
       for h in "`cat hosts/$i | grep -v ^#`"; do
-        host_name=`echo $h | awk -F: '{print $1}'`
-        port=`echo $h | awk -F: '{print $2}'`
+        get_host "$h"
 
         printf "${C}\n─ Host: %s${UC}" "$host_name"
-
         [[ $port ]] && printf "${C}:%s${UC}" "$port" || printf "${C}:22${UC}"
 
         printf "\n└─ Users: "
@@ -270,7 +267,7 @@ remove_something_dude() {
 
 run_playbook() {
 
-  echo "${R}➜ Введите пароль от sudo ...${UC}"
+  printf "${R}➜ Введите пароль от sudo ...${UC}\n"
   ansible-playbook -i $1 $2 -K
 
 }
@@ -307,5 +304,7 @@ case $1 in
     ;;
 
 esac
+
+# Hello!
 
 exit 0
