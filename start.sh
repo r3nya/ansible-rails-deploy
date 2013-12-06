@@ -124,9 +124,8 @@ ssh_ls_apps() {
 		
   for h in "`cat hosts/${HOST_FILES[$1]} | grep -v ^#`"; do
     get_host "$h"
-    printf "${G}── Host: %s${UC}" "$host_name"
-    [[ $port ]] && (printf "${G}:%s${UC}\n" "$port") || (printf "${G}:22${UC}\n")
-    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R} ✗ Web-apps not found in /home/deploy!${UC}\n"; FAIL='1')
+    printf "${G}── Host: %s:%s\n${UC}" "$host_name" "$port"
+    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls -d /home/deploy/*/*/www' 2>/dev/null && FAIL='NO' || printf "${R} ✗ Web-apps not found in /home/deploy!${UC}\n"
   done
 
 }
@@ -163,9 +162,7 @@ list_apps() {
     clear
     ssh_ls_apps $number
 
-    set -e
-
-    [[ $FAIL ]] && exit
+    [[ ! $FAIL ]] && exit
 			
     printf "${R}➜ Удаляем эти приложения? y/n${UC}\n"
     read yn
@@ -199,6 +196,11 @@ rm_users() {
   printf "\n${G}➜ Введите номер юзера...${UC}\n"
   read usnum
 
+  if [[ $usnum -ge ${#users[@]} ]]; then
+    printf "${R}Данного юзера не существует!${UC}\n\n"
+    list_users
+  fi
+
   printf "${R}Удаляем юзера '%s'? y/n ${UC}\n" "${users[$usnum]}"
   read yn
 
@@ -206,6 +208,14 @@ rm_users() {
     printf "\nabsent_user: \"%s\"" "${users[$usnum]}" >> $SETTINGS
     run_playbook hosts/"${HOST_FILES[$1]}" remove_user.yml
   fi 
+
+  if [[ ${#users[@]} != 1 ]]; then
+    clear
+    printf "${G}➜ Юзер ${users[$usnum]} удален.\nБудем еще удалять? y/n${UC}\n"
+    read yn
+    clear
+    [[ $yn = 'y' ]] && list_users
+  fi
 }
 
 list_users() {
@@ -239,10 +249,10 @@ view_apps() {
         [[ $port ]] && printf "${C}:%s${UC}" "$port" || printf "${C}:22${UC}"
 
         printf "\n└─ Users: "
-        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls /home/deploy/' 2>/dev/null || ( printf "${R}\t✗ Not found!${UC}" )
+        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; echo; ls /home/deploy/' 2>/dev/null || ( printf "${R}\t✗ Not found!${UC}" )
 
         printf "\n└─ Apps: "
-        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R}\t✗ Web-apps not found in /home/deploy!${UC}\n")
+        ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; echo; ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R}\t✗ Web-apps not found in /home/deploy!${UC}\n")
       done
   done  
 }
