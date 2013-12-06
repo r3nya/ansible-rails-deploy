@@ -34,9 +34,9 @@ UC="\e[0m"  # user color
 
 usage() {
   printf "$GИспользование:$UC\n\n"
-  printf "\t-r  | --run\tСделай мне хорошо!\n"
+  printf "\t-r  | --run\tДеплой!\n"
   printf "\t-rm | --remove\tУдаление\n"
-  printf "\t-a  | --apps\tПросмотр установленных приложений\n"
+  printf "\t-a  | --apps\tПросмотр\n"
   printf "\t-h  | --help\tЭто сообщение\n"
 }
 
@@ -121,8 +121,8 @@ ssh_ls_apps(){
     host_name=`echo $h | awk -F: '{print $1}'`
     port=`echo $h | awk -F: '{print $2}'`
     printf "${G}── Host: %s${UC}" "$host_name"
-    [[ $port ]] && printf "${G}:%s${UC}\n" "$port" || printf "${G}:22${UC}\n"
-    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'ls -d /home/deploy/*/*/www' 2>/dev/null || ( echo " ✗ Web-apps not found in /home/deploy!"; FAIL='1')
+    [[ $port ]] && (printf "${G}:%s${UC}\n" "$port") || (printf "${G}:22${UC}\n")
+    ssh $host_name -p `[[ $port ]] && echo $port || echo 22` 'echo; ls -d /home/deploy/*/*/www' 2>/dev/null || ( printf "${R} ✗ Web-apps not found in /home/deploy!${UC}\n"; FAIL='1')
   done
 
 }
@@ -130,9 +130,12 @@ ssh_ls_apps(){
 list_all_installed_apps() {
   clear
 
+  j=0
+
   for f in ${HOST_FILES[@]}; do
-    printf "\n${G} ➜ Host file: %s${UC}\n\n" "$f"
-    ssh_ls_apps $f
+    printf "\n${G} ➜ Host file: %s - %s${UC}\n\n" "$j" "$f"
+    ssh_ls_apps "$j"
+    let j++
   done
 }
 
@@ -143,7 +146,7 @@ list_apps() {
   j=0
 
   for i in ${HOST_FILES[@]}; do			
-    printf "\t└── $i\t($j)\n"
+    printf "\t└── ${C}$i${UC}\t($j)\n"
     let j++
   done
 
@@ -160,7 +163,7 @@ list_apps() {
 
     [[ $FAIL ]] && exit
 			
-    echo "${R}➜ Удаляем эти приложения? y/n${UC}"
+    printf "${R}➜ Удаляем эти приложения? y/n${UC}\n"
     read yn
 
     [[ $yn = 'y' ]] && ( run_playbook hosts/"${HOST_FILES[$number]}" remove.yml )
