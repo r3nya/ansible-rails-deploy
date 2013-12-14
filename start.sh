@@ -186,17 +186,19 @@ ssh_ls_users() {
 rm_users() {
   j=0
   printf "${G}➜ Users:${UC}\n"
+
+  [[ ! ${users[0]} ]] && printf "${R} ✗ Users not found!${UC}\n" && exit
+
   for i in "${users[@]}"; do
     printf "└── %s\t(%s)\n" "$i" "$j"
     let j++
   done 
 
-  [[ ! ${users[0]} ]] && printf "${R} ✗ Users not found!${UC}\n" && exit
 
   printf "\n${G}➜ Введите номер юзера...${UC}\n"
   read usnum
 
-  if [[ $usnum -ge ${#users[@]} ]]; then
+  if [[ $usnum -ge $j ]] || [[ $usnem -ge 0 ]]; then
     printf "${R}Данного юзера не существует!${UC}\n\n"
     list_users
   fi
