@@ -198,7 +198,7 @@ rm_users() {
   printf "\n${G}➜ Введите номер юзера...${UC}\n"
   read usnum
 
-  if [[ $usnum -ge $j ]] || [[ $usnem -ge 0 ]]; then
+  if [[ $usnum -ge ${#users[@]} ]]; then
     printf "${R}Данного юзера не существует!${UC}\n\n"
     list_users
   fi
